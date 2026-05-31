@@ -15,11 +15,11 @@ USERS = {
 TARGETS = {
     "weekly": {
         "outbound": 175, "wirk_calls": 25, "neue_kandidaten": 18,
-        "assignments": 8, "sendouts": 6, "interviews": 4, "neue_jobs": 4,
+        "assignments": 8, "sendouts": 6, "interviews": 4, "neue_jobs": 5,
     },
     "monthly": {
         "deals": 2, "interviews": 16, "sendouts": 24,
-        "neue_jobs": 16, "neue_kunden": 4,
+        "neue_jobs": 20, "neue_kunden": 4,
     },
 }
 
@@ -268,6 +268,10 @@ def get_windows(today):
 
 # ============== UI HELPERS ==============
 
+def clean_html(html):
+    """Entfernt Leading-Whitespace pro Zeile, sonst rendert Streamlit-Markdown das als Code-Block."""
+    return " ".join(line.strip() for line in html.split("\n") if line.strip())
+
 def status_color(pct):
     if pct >= 1.0: return "#22c55e"
     if pct >= 0.5: return "#f59e0b"
@@ -283,7 +287,7 @@ def big_kpi_card(label, value, target, icon):
     pct_w = min(pct * 100, 100)
     color = status_color(pct)
     label_status = status_label(pct)
-    return f"""
+    return clean_html(f"""
     <div style="background: white; padding: 22px; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 14px; border-left: 5px solid {color};">
       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div style="font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px;">{icon} {label}</div>
@@ -297,7 +301,7 @@ def big_kpi_card(label, value, target, icon):
       </div>
       <div style="font-size: 12px; color: #64748b; margin-top: 6px; font-weight: 500;">{int(pct*100)} % erreicht</div>
     </div>
-    """
+    """)
 
 def deals_hero(person, value, target, days_left):
     pct = (value / target) if target else 0
@@ -305,7 +309,7 @@ def deals_hero(person, value, target, days_left):
     color = status_color(pct)
     label_status = status_label(pct)
     name = person.upper()
-    return f"""
+    return clean_html(f"""
     <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 32px 28px; border-radius: 16px; color: white; box-shadow: 0 4px 16px rgba(0,0,0,0.15); margin-bottom: 24px;">
       <div style="font-size: 12px; font-weight: 700; color: #94a3b8; letter-spacing: 2px; margin-bottom: 4px;">{name}</div>
       <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -322,7 +326,7 @@ def deals_hero(person, value, target, days_left):
         {int(pct*100)} % erreicht · noch {days_left} Tage im Monat
       </div>
     </div>
-    """
+    """)
 
 def render_day_heatmap(per_day_kandidaten, per_day_wirk, week_start, today):
     days = [week_start + dt.timedelta(days=i) for i in range(5)]
@@ -347,10 +351,10 @@ def render_day_heatmap(per_day_kandidaten, per_day_wirk, week_start, today):
         else:
             bg, txt_color = "#fee2e2", "#991b1b"
             content = f"<div style='font-size: 28px; font-weight: 900;'>{wirk}</div><div style='font-size: 11px;'>Wirk-Calls</div><div style='font-size: 12px; margin-top: 4px;'>{kand} ins CRM</div>"
-        cells.append(f"""<div style="background: {bg}; padding: 14px; border-radius: 10px; text-align: center; color: {txt_color};">
+        cells.append(clean_html(f"""<div style="background: {bg}; padding: 14px; border-radius: 10px; text-align: center; color: {txt_color};">
             <div style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 4px;">{d.strftime('%a %d.%m')}</div>
             {content}
-        </div>""")
+        </div>"""))
     return "<div style='display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;'>" + "".join(cells) + "</div>"
 
 def page_css():

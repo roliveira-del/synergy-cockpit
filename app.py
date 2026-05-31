@@ -77,7 +77,9 @@ def render_compact_card(col, person):
         {rows_html}
     </div>
     """
-    col.markdown(html, unsafe_allow_html=True)
+    # HTML-Whitespace strippen, sonst interpretiert Markdown >=4 Spaces als Code-Block
+    html_clean = " ".join(line.strip() for line in html.split("\n") if line.strip())
+    col.markdown(html_clean, unsafe_allow_html=True)
 
 render_compact_card(col_kev, "Kevin")
 render_compact_card(col_rob, "Robin")
