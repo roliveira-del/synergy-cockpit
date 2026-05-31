@@ -127,7 +127,7 @@ Was 2 Deals bedeuten (bei durchschnittlich 15.000 € Honorar):
 
 | Was | Wo / Wie |
 |---|---|
-| **Cockpit live** | https://synergy-pace.streamlit.app (eure persönlichen Seiten unter /Kevin und /Robin) |
+| **Cockpit live** | https://synergy-tracker.streamlit.app (eure persönlichen Seiten unter /Kevin und /Robin) |
 | **Tägliche Auto-Mail 18:30** | Stand des Tages mit Ampel pro KPI, an euch + Rico in CC |
 | **Wochenreport Freitag 17:00** | Trend der Woche per Mail |
 | **1-2 Co-Working-Tage bei Rico/Woche** | Empfehlung, gegen Homeoffice-Verzettelung |
@@ -164,6 +164,6 @@ Wir schreiben es auf, am Freitag-Review wird abgeglichen.
 
 ---
 
-**Cockpit:** https://synergy-pace.streamlit.app
+**Cockpit:** https://synergy-tracker.streamlit.app
 **Performance-Guideline:** im GitHub-Repo synergy-cockpit
 **Stand: 31.05.2026, 19:15**

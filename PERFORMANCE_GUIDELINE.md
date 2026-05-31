@@ -222,9 +222,9 @@ Wenn ein Kunde 4 Wochen keinen Bedarf zurückmeldet trotz Follow-up: Job-Status 
 ### 8.4 Cockpit-URL
 
 Persönliche Seiten:
-- **Kevin:** https://synergy-pace.streamlit.app/Kevin
-- **Robin:** https://synergy-pace.streamlit.app/Robin
-- **Team-Übersicht:** https://synergy-pace.streamlit.app
+- **Kevin:** https://synergy-tracker.streamlit.app/Kevin
+- **Robin:** https://synergy-tracker.streamlit.app/Robin
+- **Team-Übersicht:** https://synergy-tracker.streamlit.app
 
 ---
 
@@ -355,7 +355,7 @@ Erste vollständige Trend-Auswertung. Targets ggf. anpassen, Schwächen-Punkte i
 
 ## 14. Anlagen und Verweise
 
-- **Cockpit:** https://synergy-pace.streamlit.app
+- **Cockpit:** https://synergy-tracker.streamlit.app
 - **GitHub-Repo (Code):** https://github.com/roliveira-del/synergy-cockpit
 - **Tagesarchiv:** `~/tracking/history.jsonl` + `~/tracking/weekly_YYYY-KWNN.md`
 - **Datenquellen:**
