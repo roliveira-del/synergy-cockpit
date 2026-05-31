@@ -369,9 +369,10 @@ def page_css():
 </style>
 """
 
-def render_person_page(person):
+def render_person_page(person, today=None):
     """Volle Person-Seite mit Hero + KPIs + Heatmap."""
-    today = dt.datetime.now()
+    if today is None:
+        today = dt.datetime.now()
     week_start, week_end, month_start, month_end = get_windows(today)
     days_left = max(0, (month_end.date() - today.date()).days)
 
@@ -410,9 +411,39 @@ def render_person_page(person):
     qcol3.metric("Interviews scheduled", f"{week['interviews']} / {TARGETS['weekly']['interviews']}")
 
 def render_sidebar():
+    """Sidebar mit Wochen-Selector. Gibt den gewaehlten 'today' (datetime) zurueck."""
+    today = dt.datetime.now()
     with st.sidebar:
         st.markdown("### Synergy Cockpit")
         st.caption("Zielerreichung Kevin & Robin")
+        st.markdown("---")
+
+        # Wochen-Selector
+        current_kw = today.isocalendar().week
+        options = []
+        for offset in range(0, 5):
+            d = today - dt.timedelta(weeks=offset)
+            kw = d.isocalendar().week
+            week_start_d = (d - dt.timedelta(days=d.weekday())).date()
+            label = f"KW{kw} ({week_start_d.strftime('%d.%m.')} bis {(week_start_d + dt.timedelta(days=6)).strftime('%d.%m.')})"
+            if offset == 0:
+                label = "Diese Woche · " + label
+            elif offset == 1:
+                label = "Letzte Woche · " + label
+            options.append((label, offset))
+
+        labels = [o[0] for o in options]
+        choice = st.selectbox("Welche Woche?", labels, index=0)
+        chosen_offset = dict(options)[choice]
+
+        # today auf Freitag der gewaehlten Woche setzen, damit Wochen-View komplett ist
+        if chosen_offset > 0:
+            week_anchor = today - dt.timedelta(weeks=chosen_offset)
+            week_monday = week_anchor - dt.timedelta(days=week_anchor.weekday())
+            today_effective = week_monday + dt.timedelta(days=4, hours=23, minutes=59, seconds=59)
+        else:
+            today_effective = today
+
         st.markdown("---")
         if st.button("🔄 Daten jetzt neu laden", use_container_width=True):
             st.cache_data.clear()
@@ -421,3 +452,4 @@ def render_sidebar():
         st.markdown("---")
         st.caption("**Daten-Quellen:** Aircall · Recruit CRM")
         st.caption("**Kandidaten-Calls per Handy** sind im Tracking nicht erfasst.")
+    return today_effective

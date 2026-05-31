@@ -12,9 +12,8 @@ from lib import (
 
 st.set_page_config(page_title="Synergy Cockpit", page_icon="🎯", layout="wide")
 st.markdown(page_css(), unsafe_allow_html=True)
-render_sidebar()
+today = render_sidebar()
 
-today = dt.datetime.now()
 week_start, week_end, month_start, month_end = get_windows(today)
 days_left = max(0, (month_end.date() - today.date()).days)
 
