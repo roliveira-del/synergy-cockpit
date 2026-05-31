@@ -14,7 +14,7 @@ USERS = {
 
 TARGETS = {
     "weekly": {
-        "outbound": 175, "wirk_calls": 25, "neue_kandidaten": 18,
+        "outbound": 225, "wirk_calls": 25, "neue_kandidaten": 18,
         "assignments": 8, "sendouts": 6, "interviews": 4, "neue_jobs": 5,
     },
     "monthly": {
