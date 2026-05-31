@@ -413,6 +413,7 @@ def render_person_page(person, today=None):
 def render_sidebar():
     """Sidebar mit Wochen-Selector. Gibt den gewaehlten 'today' (datetime) zurueck."""
     today = dt.datetime.now()
+    today_effective = today  # safe default
     with st.sidebar:
         st.markdown("### Synergy Cockpit")
         st.caption("Zielerreichung Kevin & Robin")
