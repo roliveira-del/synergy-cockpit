@@ -8,10 +8,15 @@
 
 > **Jeder macht 2 Platzierungen pro Monat.** Alles andere ist Mittel zum Zweck.
 
-**Was 2 Deals bedeuten (bei 15.000 € Honorar pro Deal):**
+**Provisionsstaffel:**
+- 0-15.000 €: 20 %  |  15.001-30.000 €: 30 %  |  30.001-40.000 €: 40 %  |  ab 40.001 €: 50 %
+
+**Was 2 Deals brutto bedeuten (bei 15.000 € Honorar pro Deal):**
 - 0 Deals = 2.200-2.500 € (nur Fix)
-- 1 Deal = 5.500 €
-- **2 Deals = 10.000 €** (zweiter Deal verdient mehr wegen 30%-Bracket)
+- 1 Deal = 5.200-5.500 €
+- **2 Deals = 9.700-10.000 €** (zweiter Deal verdient mehr wegen 30%-Bracket)
+- 3 Deals = 16.200-16.500 €
+- 4 Deals = 23.700-24.000 €
 
 ---
 

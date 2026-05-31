@@ -13,16 +13,31 @@ Alles, was wir messen, zählen und besprechen, dient diesem einen Goal. Eure KPI
 
 ### Was 2 Deals pro Monat finanziell bedeuten
 
-Beispielrechnung mit 15.000 € durchschnittlichem Honorar pro Deal.
+Provisionsstaffel (gestaffelt nach Monatsumsatz):
 
-| Deals/Monat | Umsatz | Provision (gestaffelt) | + Fixgehalt | **Brutto gesamt** |
-|---|---|---|---|---|
-| 0 Deals | 0 € | 0 € | 2.200-2.500 € | **2.200-2.500 €** |
-| 1 Deal | 15.000 € | 3.000 € (20 %) | 2.200-2.500 € | **5.200-5.500 €** |
-| 2 Deals | 30.000 € | 3.000 + 4.500 = 7.500 € (20% / 30%) | 2.200-2.500 € | **9.700-10.000 €** |
-| 3 Deals | 45.000 € | 7.500 € + nächste Stufe | 2.200-2.500 € | **12.000 €+** |
+| Umsatz-Bracket | Provisionssatz |
+|---|---|
+| 0 - 15.000 € | **20 %** |
+| 15.001 - 30.000 € | **30 %** |
+| 30.001 - 40.000 € | **40 %** |
+| ab 40.001 € | **50 %** |
 
-**Der zweite Deal bringt mehr als der erste.** Jeder fehlende Deal kostet euch 3.000-4.500 € brutto. Das ist die Motivation.
+Beispielrechnung bei 30.000 € Monatsumsatz (= 2 Deals à 15.000 € Honorar):
+- Erste Stufe: 15.000 × 20 % = **3.000 €**
+- Zweite Stufe: 15.000 × 30 % = **4.500 €**
+- Gesamtprovision: **7.500 €**
+
+Was das brutto pro Monat heißt (Fixgehalt 2.200-2.500 € + Provision):
+
+| Deals/Monat | Monatsumsatz | Provision | **Brutto gesamt** |
+|---|---|---|---|
+| 0 Deals | 0 € | 0 € | **2.200-2.500 €** |
+| 1 Deal | 15.000 € | 3.000 € | **5.200-5.500 €** |
+| **2 Deals (Ziel)** | **30.000 €** | **7.500 €** | **9.700-10.000 €** |
+| 3 Deals | 45.000 € | 14.000 € | **16.200-16.500 €** |
+| 4 Deals | 60.000 € | 21.500 € | **23.700-24.000 €** |
+
+**Wer auf 0 hängt, verzichtet auf 7.500 € jeden Monat.** Wer auf 4 Deals geht, verdient das Zehnfache vom Fixgehalt.
 
 ---
 
@@ -264,10 +279,11 @@ Drei Monate ohne Deal ist nicht Pech, das ist System-Fehler. Damit ist das Vertr
 | Umsatz-Bracket / Monat | Provisionssatz |
 |---|---|
 | 0 - 15.000 € | **20 %** |
-| 15.000 - 30.000 € | **30 %** |
-| 30.000 + | höher (Details bei Rico) |
+| 15.001 - 30.000 € | **30 %** |
+| 30.001 - 40.000 € | **40 %** |
+| ab 40.001 € | **50 %** |
 
-Die Staffel ist **monatlich**. Sie wird nicht über das Jahr aufgerechnet. Wer 2 Deals/Monat hängt, kommt jeden Monat in Bracket 2 und verdient ein Vielfaches.
+Die Staffel ist **monatlich**. Sie wird nicht über das Jahr aufgerechnet. Wer 2 Deals/Monat hängt, kommt jeden Monat in Bracket 2 und verdient ein Vielfaches. Bei 4 Deals greift bereits die 50%-Stufe.
 
 ### 10.2 Team-Reise nach Zypern
 

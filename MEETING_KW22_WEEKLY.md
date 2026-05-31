@@ -12,16 +12,19 @@
 >
 > Alles, was wir messen, dient diesem einen Goal.
 
+Provisionsstaffel: 0-15.000 € → 20 % | 15.001-30.000 € → 30 % | 30.001-40.000 € → 40 % | ab 40.001 € → 50 %
+
 Was 2 Deals bedeuten (bei durchschnittlich 15.000 € Honorar):
 
-| Deals/Monat | Provision | + Fix | **Brutto** |
-|---|---|---|---|
-| 0 | 0 € | 2.200-2.500 € | **2.200-2.500 €** |
-| 1 | 3.000 € | 2.200-2.500 € | **5.200-5.500 €** |
-| 2 | 7.500 € | 2.200-2.500 € | **9.700-10.000 €** |
-| 3 | 12.000 €+ | 2.200-2.500 € | **14.500 €+** |
+| Deals/Monat | Monatsumsatz | Provision | + Fix | **Brutto** |
+|---|---|---|---|---|
+| 0 | 0 € | 0 € | 2.200-2.500 € | **2.200-2.500 €** |
+| 1 | 15.000 € | 3.000 € | 2.200-2.500 € | **5.200-5.500 €** |
+| **2 (Ziel)** | **30.000 €** | **7.500 €** | 2.200-2.500 € | **9.700-10.000 €** |
+| 3 | 45.000 € | 14.000 € | 2.200-2.500 € | **16.200-16.500 €** |
+| 4 | 60.000 € | 21.500 € | 2.200-2.500 € | **23.700-24.000 €** |
 
-**Der zweite Deal bringt mehr als der erste.** Wer auf 0 hängt, verzichtet auf 7.500 € jeden Monat.
+**Der zweite Deal bringt mehr als der erste.** Wer auf 0 hängt, verzichtet auf 7.500 € jeden Monat. Wer auf 4 Deals geht, verdient das Zehnfache.
 
 ---
 
