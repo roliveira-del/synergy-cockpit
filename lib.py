@@ -180,10 +180,13 @@ def load_all_data(today_iso):
     companies = fetch_companies()
     jobs = fetch_jobs()
     cutoff = (today - dt.timedelta(days=90))
-    relevant_slugs = [j.get("slug") for j in jobs if j.get("slug") and (
+    # Sort by created_on desc, take top 30 (most recent) - schneller Pull
+    relevant_jobs = [j for j in jobs if j.get("slug") and (
         (parse_dt(j.get("created_on")) and parse_dt(j.get("created_on")) >= cutoff)
         or (j.get("job_status") or {}).get("label") == "Open"
-    )][:90]
+    )]
+    relevant_jobs.sort(key=lambda j: j.get("created_on") or "", reverse=True)
+    relevant_slugs = [j.get("slug") for j in relevant_jobs[:30]]
     assignments = fetch_assignments(tuple(relevant_slugs))
     return {
         "calls": calls,
