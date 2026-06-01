@@ -77,6 +77,32 @@ def parse_dt(s):
     except Exception:
         return None
 
+@st.cache_data(ttl=600)
+def load_pauses():
+    """Laedt Abwesenheits-Tage pro Person aus pauses.json."""
+    p = Path(__file__).parent / "pauses.json"
+    if not p.exists():
+        return {}
+    try:
+        data = json.loads(p.read_text())
+        # entfernt _help-Key
+        return {k: v for k, v in data.items() if not k.startswith("_")}
+    except Exception:
+        return {}
+
+def is_pause_day(person, day_str):
+    """True wenn die Person an diesem Tag (YYYY-MM-DD) eine Pause hat."""
+    pauses = load_pauses()
+    person_pauses = pauses.get(person, [])
+    return any(p.get("date") == day_str for p in person_pauses)
+
+def pause_reason(person, day_str):
+    pauses = load_pauses()
+    for p in pauses.get(person, []):
+        if p.get("date") == day_str:
+            return p.get("reason", "Pause")
+    return ""
+
 # ============== DATA PULL (cached, geteilt zwischen Pages) ==============
 
 @st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Aircall)...")
@@ -331,7 +357,7 @@ def deals_hero(person, value, target, days_left):
     </div>
     """)
 
-def render_day_heatmap(per_day_kandidaten, per_day_wirk, week_start, today):
+def render_day_heatmap(per_day_kandidaten, per_day_wirk, week_start, today, person=None):
     days = [week_start + dt.timedelta(days=i) for i in range(5)]
     cells = []
     for d in days:
@@ -339,9 +365,14 @@ def render_day_heatmap(per_day_kandidaten, per_day_wirk, week_start, today):
         kand = per_day_kandidaten.get(key, 0)
         wirk = per_day_wirk.get(key, 0)
         is_future = d.date() > today.date()
+        is_pause = person and is_pause_day(person, key)
         if is_future:
             bg, txt_color = "#f1f5f9", "#cbd5e1"
             content = f"<div style='font-size: 28px; color: {txt_color};'>·</div>"
+        elif is_pause:
+            reason = pause_reason(person, key)
+            bg, txt_color = "#e2e8f0", "#64748b"
+            content = f"<div style='font-size: 22px;'>⏸️</div><div style='font-size: 11px; margin-top: 4px;'>Pause</div><div style='font-size: 10px; margin-top: 2px; color: #64748b;'>{reason}</div>"
         elif kand == 0 and wirk == 0:
             bg, txt_color = "#fee2e2", "#991b1b"
             content = f"<div style='font-size: 24px;'>🔴</div><div style='font-size: 11px; margin-top: 4px;'>Null-Tag</div>"
@@ -403,8 +434,8 @@ def render_person_page(person, today=None):
 
     # Tagesverteilung
     st.markdown("## Deine Woche Tag für Tag")
-    st.markdown(render_day_heatmap(week["per_day_kandidaten"], week["per_day_wirk"], week_start, today), unsafe_allow_html=True)
-    st.caption("Pro Tag: Wirk-Calls und Kandidaten ins CRM. Null-Tage sind rot, weil kein Tag auf 0 stehen darf.")
+    st.markdown(render_day_heatmap(week["per_day_kandidaten"], week["per_day_wirk"], week_start, today, person=person), unsafe_allow_html=True)
+    st.caption("Pro Tag: Wirk-Calls und Kandidaten ins CRM. Null-Tage sind rot, weil kein Tag auf 0 stehen darf. Pause-Tage sind grau (Umzug, Urlaub, krank).")
 
     # Gespraechsqualitaet
     st.markdown("## Gesprächsqualität")
@@ -456,4 +487,16 @@ def render_sidebar():
         st.markdown("---")
         st.caption("**Daten-Quellen:** Aircall · Recruit CRM")
         st.caption("**Kandidaten-Calls per Handy** sind im Tracking nicht erfasst.")
+
+        # Abwesenheiten
+        pauses_data = load_pauses()
+        any_pause = any(pauses_data.get(p, []) for p in pauses_data)
+        if any_pause:
+            st.markdown("---")
+            st.markdown("**⏸️ Geplante Pausen**")
+            for name, plist in pauses_data.items():
+                if plist:
+                    for p in plist:
+                        st.caption(f"{name} · {p.get('date')} · {p.get('reason','Pause')}")
+            st.caption("[Editieren auf GitHub](https://github.com/roliveira-del/synergy-cockpit/edit/main/pauses.json)")
     return today_effective
