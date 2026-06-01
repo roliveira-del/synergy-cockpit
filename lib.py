@@ -79,7 +79,7 @@ def parse_dt(s):
 
 # ============== DATA PULL (cached, geteilt zwischen Pages) ==============
 
-@st.cache_data(ttl=900, show_spinner="Daten werden geladen (Aircall)...")
+@st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Aircall)...")
 def fetch_aircall(from_ts, to_ts):
     calls = []
     page = 1
@@ -97,7 +97,7 @@ def fetch_aircall(from_ts, to_ts):
         time.sleep(0.4)
     return calls
 
-@st.cache_data(ttl=900, show_spinner="Daten werden geladen (Kandidaten)...")
+@st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Kandidaten)...")
 def fetch_candidates(max_pages=20):
     out = []
     page = 1
@@ -114,7 +114,7 @@ def fetch_candidates(max_pages=20):
         time.sleep(0.5)
     return out
 
-@st.cache_data(ttl=900, show_spinner="Daten werden geladen (Companies)...")
+@st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Companies)...")
 def fetch_companies(max_pages=10):
     out = []
     page = 1
@@ -131,7 +131,7 @@ def fetch_companies(max_pages=10):
         time.sleep(0.5)
     return out
 
-@st.cache_data(ttl=900, show_spinner="Daten werden geladen (Jobs)...")
+@st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Jobs)...")
 def fetch_jobs(max_pages=10):
     out = []
     page = 1
@@ -148,7 +148,7 @@ def fetch_jobs(max_pages=10):
         time.sleep(0.5)
     return out
 
-@st.cache_data(ttl=900, show_spinner="Daten werden geladen (Assignments)...")
+@st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Assignments)...")
 def fetch_assignments(job_slugs):
     out = []
     for slug in job_slugs:
