@@ -124,7 +124,7 @@ def fetch_aircall(from_ts, to_ts):
     return calls
 
 @st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Kandidaten)...")
-def fetch_candidates(max_pages=20):
+def fetch_candidates(max_pages=5):
     out = []
     page = 1
     while page <= max_pages:
@@ -137,11 +137,11 @@ def fetch_candidates(max_pages=20):
         out.extend(chunk)
         if not d.get("next_page_url"): break
         page += 1
-        time.sleep(0.5)
+        time.sleep(0.3)
     return out
 
 @st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Companies)...")
-def fetch_companies(max_pages=10):
+def fetch_companies(max_pages=3):
     out = []
     page = 1
     while page <= max_pages:
@@ -154,11 +154,11 @@ def fetch_companies(max_pages=10):
         out.extend(chunk)
         if not d.get("next_page_url"): break
         page += 1
-        time.sleep(0.5)
+        time.sleep(0.3)
     return out
 
 @st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Jobs)...")
-def fetch_jobs(max_pages=10):
+def fetch_jobs(max_pages=2):
     out = []
     page = 1
     while page <= max_pages:
@@ -171,7 +171,7 @@ def fetch_jobs(max_pages=10):
         out.extend(chunk)
         if not d.get("next_page_url"): break
         page += 1
-        time.sleep(0.5)
+        time.sleep(0.3)
     return out
 
 @st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Assignments)...")
@@ -212,7 +212,7 @@ def load_all_data(today_iso):
         or (j.get("job_status") or {}).get("label") == "Open"
     )]
     relevant_jobs.sort(key=lambda j: j.get("created_on") or "", reverse=True)
-    relevant_slugs = [j.get("slug") for j in relevant_jobs[:30]]
+    relevant_slugs = [j.get("slug") for j in relevant_jobs[:10]]
     assignments = fetch_assignments(tuple(relevant_slugs))
     return {
         "calls": calls,
