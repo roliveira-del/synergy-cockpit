@@ -7,7 +7,7 @@ import datetime as dt
 from lib import (
     USERS, TARGETS, page_css, render_sidebar,
     load_all_data, aggregate_person, get_windows,
-    status_color, status_label,
+    status_color, status_label, get_period_from_cache,
 )
 
 st.set_page_config(page_title="Synergy Cockpit", page_icon="🎯", layout="wide")
@@ -22,14 +22,22 @@ st.caption(f"Woche {week_start.strftime('%d.%m.')} bis {week_end.strftime('%d.%m
 
 st.info("⬅️ Wähle in der Seitenleiste links **Kevin** oder **Robin**, um die persönliche Seite zu sehen.")
 
-data = load_all_data(today.replace(microsecond=0).isoformat())
+data = None  # lazy load - nur wenn Cache fehlt
 
 # Zwei Spalten nebeneinander
 col_kev, col_rob = st.columns(2)
 
 def render_compact_card(col, person):
-    week = aggregate_person(person, data, week_start, week_end)
-    month = aggregate_person(person, data, month_start, month_end)
+    global data
+    week = get_period_from_cache(person, week_start, week_end)
+    month = get_period_from_cache(person, month_start, month_end)
+    if week is None or month is None:
+        if data is None:
+            data = load_all_data(today.replace(microsecond=0).isoformat())
+        if week is None:
+            week = aggregate_person(person, data, week_start, week_end)
+        if month is None:
+            month = aggregate_person(person, data, month_start, month_end)
 
     deals = month["deals"]
     deal_pct = (deals / TARGETS["monthly"]["deals"]) * 100

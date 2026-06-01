@@ -77,7 +77,7 @@ def parse_dt(s):
     except Exception:
         return None
 
-@st.cache_data(ttl=600)
+@st.cache_data(ttl=120)
 def load_pauses():
     """Laedt Abwesenheits-Tage pro Person aus pauses.json."""
     p = Path(__file__).parent / "pauses.json"
@@ -89,6 +89,34 @@ def load_pauses():
         return {k: v for k, v in data.items() if not k.startswith("_")}
     except Exception:
         return {}
+
+@st.cache_data(ttl=120)
+def load_cockpit_cache():
+    """Laedt vorberechnete Aggregate aus cockpit_data.json. Gibt None zurueck wenn nicht da."""
+    p = Path(__file__).parent / "cockpit_data.json"
+    if not p.exists():
+        return None
+    try:
+        return json.loads(p.read_text())
+    except Exception:
+        return None
+
+def get_period_from_cache(person, period_start, period_end):
+    """Holt Aggregate fuer eine Person/Periode aus dem Cache. None wenn nicht gefunden."""
+    data = load_cockpit_cache()
+    if not data:
+        return None
+    start_d = period_start.strftime("%Y-%m-%d")
+    end_d = period_end.strftime("%Y-%m-%d")
+    # KW-Match
+    for key, w in data.get("weeks", {}).items():
+        if w["start"][:10] == start_d and w["end"][:10] == end_d:
+            return w.get(person)
+    # Monatsmatch
+    m = data.get("month", {})
+    if m.get("start", "")[:10] == start_d and m.get("end", "")[:10] == end_d:
+        return m.get(person)
+    return None
 
 def is_pause_day(person, day_str):
     """True wenn die Person an diesem Tag (YYYY-MM-DD) eine Pause hat."""
@@ -410,9 +438,20 @@ def render_person_page(person, today=None):
     week_start, week_end, month_start, month_end = get_windows(today)
     days_left = max(0, (month_end.date() - today.date()).days)
 
-    data = load_all_data(today.replace(microsecond=0).isoformat())
-    week = aggregate_person(person, data, week_start, week_end)
-    month = aggregate_person(person, data, month_start, month_end)
+    # Versuche zuerst aus dem Cache (cockpit_data.json) zu laden - instant
+    week = get_period_from_cache(person, week_start, week_end)
+    month = get_period_from_cache(person, month_start, month_end)
+
+    # Fallback auf Live-Pull wenn Cache nicht da oder Periode nicht im Cache
+    if week is None or month is None:
+        data = load_all_data(today.replace(microsecond=0).isoformat())
+        if week is None:
+            week = aggregate_person(person, data, week_start, week_end)
+        if month is None:
+            month = aggregate_person(person, data, month_start, month_end)
+        cache_info = "live"
+    else:
+        cache_info = "cache"
 
     st.markdown(f"# {person} · Wo stehst du?")
     st.caption(f"KW{week_start.isocalendar().week} · {week_start.strftime('%d.%m.')} bis {week_end.strftime('%d.%m.%Y')} · Stand {today.strftime('%H:%M')}")
