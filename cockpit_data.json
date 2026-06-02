@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-06-02T12:45:01",
+  "generated_at": "2026-06-02T13:00:00",
   "weeks": {
     "2026-KW23": {
       "start": "2026-06-01T00:00:00",
       "end": "2026-06-07T23:59:59",
       "Kevin": {
-        "outbound": 14,
+        "outbound": 18,
         "wirk_calls": 2,
-        "answered_outbound": 7,
-        "duration_sec": 3679,
-        "total_calls": 14,
-        "neue_kandidaten": 0,
+        "answered_outbound": 8,
+        "duration_sec": 3831,
+        "total_calls": 18,
+        "neue_kandidaten": 11,
         "neue_jobs": 0,
         "neue_kunden": 0,
         "assignments": 0,
@@ -18,14 +18,16 @@
         "interviews": 0,
         "deals": 0,
         "per_day_calls": {
-          "2026-06-02": 14
+          "2026-06-02": 18
         },
         "per_day_wirk": {
           "2026-06-02": 2
         },
-        "per_day_kandidaten": {},
-        "connect_rate": 50.0,
-        "avg_dur_min": 4.379761904761905
+        "per_day_kandidaten": {
+          "2026-06-02": 11
+        },
+        "connect_rate": 44.44444444444444,
+        "avg_dur_min": 3.5472222222222225
       },
       "Robin": {
         "outbound": 61,
@@ -301,12 +303,12 @@
     "start": "2026-06-01T00:00:00",
     "end": "2026-06-30T23:59:59",
     "Kevin": {
-      "outbound": 14,
+      "outbound": 18,
       "wirk_calls": 2,
-      "answered_outbound": 7,
-      "duration_sec": 3679,
-      "total_calls": 14,
-      "neue_kandidaten": 0,
+      "answered_outbound": 8,
+      "duration_sec": 3831,
+      "total_calls": 18,
+      "neue_kandidaten": 11,
       "neue_jobs": 0,
       "neue_kunden": 0,
       "assignments": 0,
@@ -314,14 +316,16 @@
       "interviews": 0,
       "deals": 0,
       "per_day_calls": {
-        "2026-06-02": 14
+        "2026-06-02": 18
       },
       "per_day_wirk": {
         "2026-06-02": 2
       },
-      "per_day_kandidaten": {},
-      "connect_rate": 50.0,
-      "avg_dur_min": 4.379761904761905
+      "per_day_kandidaten": {
+        "2026-06-02": 11
+      },
+      "connect_rate": 44.44444444444444,
+      "avg_dur_min": 3.5472222222222225
     },
     "Robin": {
       "outbound": 61,
