@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-06-05T12:15:00",
+  "generated_at": "2026-06-05T12:30:00",
   "weeks": {
     "2026-KW23": {
       "start": "2026-06-01T00:00:00",
       "end": "2026-06-07T23:59:59",
       "Kevin": {
-        "outbound": 128,
+        "outbound": 130,
         "wirk_calls": 16,
-        "answered_outbound": 84,
-        "duration_sec": 13331,
-        "total_calls": 132,
+        "answered_outbound": 86,
+        "duration_sec": 13362,
+        "total_calls": 134,
         "neue_kandidaten": 30,
         "neue_jobs": 5,
         "neue_kunden": 2,
@@ -21,7 +21,7 @@
           "2026-06-02": 44,
           "2026-06-03": 30,
           "2026-06-04": 48,
-          "2026-06-05": 10
+          "2026-06-05": 12
         },
         "per_day_wirk": {
           "2026-06-02": 6,
@@ -33,8 +33,8 @@
           "2026-06-03": 4,
           "2026-06-02": 23
         },
-        "connect_rate": 65.625,
-        "avg_dur_min": 1.6832070707070708
+        "connect_rate": 66.15384615384615,
+        "avg_dur_min": 1.6619402985074627
       },
       "Robin": {
         "outbound": 153,
@@ -318,11 +318,11 @@
     "start": "2026-06-01T00:00:00",
     "end": "2026-06-30T23:59:59",
     "Kevin": {
-      "outbound": 128,
+      "outbound": 130,
       "wirk_calls": 16,
-      "answered_outbound": 84,
-      "duration_sec": 13331,
-      "total_calls": 132,
+      "answered_outbound": 86,
+      "duration_sec": 13362,
+      "total_calls": 134,
       "neue_kandidaten": 30,
       "neue_jobs": 5,
       "neue_kunden": 2,
@@ -334,7 +334,7 @@
         "2026-06-02": 44,
         "2026-06-03": 30,
         "2026-06-04": 48,
-        "2026-06-05": 10
+        "2026-06-05": 12
       },
       "per_day_wirk": {
         "2026-06-02": 6,
@@ -346,8 +346,8 @@
         "2026-06-03": 4,
         "2026-06-02": 23
       },
-      "connect_rate": 65.625,
-      "avg_dur_min": 1.6832070707070708
+      "connect_rate": 66.15384615384615,
+      "avg_dur_min": 1.6619402985074627
     },
     "Robin": {
       "outbound": 153,
