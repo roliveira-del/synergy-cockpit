@@ -102,7 +102,13 @@ def load_cockpit_cache():
         return None
 
 def get_period_from_cache(person, period_start, period_end):
-    """Holt Aggregate fuer eine Person/Periode aus dem Cache. None wenn nicht gefunden."""
+    """Holt Aggregate fuer eine Person/Periode aus dem Cache. None wenn nicht gefunden.
+
+    Wenn der Nutzer 'Daten jetzt live ziehen' geklickt hat (force_live), geben wir
+    bewusst None zurueck, damit der Live-Pull-Fallback (load_all_data) greift.
+    """
+    if st.session_state.get("force_live"):
+        return None
     data = load_cockpit_cache()
     if not data:
         return None
@@ -152,7 +158,7 @@ def fetch_aircall(from_ts, to_ts):
     return calls
 
 @st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Kandidaten)...")
-def fetch_candidates(max_pages=5):
+def fetch_candidates(max_pages=20):
     out = []
     page = 1
     while page <= max_pages:
@@ -169,7 +175,7 @@ def fetch_candidates(max_pages=5):
     return out
 
 @st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Companies)...")
-def fetch_companies(max_pages=3):
+def fetch_companies(max_pages=10):
     out = []
     page = 1
     while page <= max_pages:
@@ -186,7 +192,7 @@ def fetch_companies(max_pages=3):
     return out
 
 @st.cache_data(ttl=3600, show_spinner="Daten werden geladen (Jobs)...")
-def fetch_jobs(max_pages=2):
+def fetch_jobs(max_pages=5):
     out = []
     page = 1
     while page <= max_pages:
@@ -240,7 +246,7 @@ def load_all_data(today_iso):
         or (j.get("job_status") or {}).get("label") == "Open"
     )]
     relevant_jobs.sort(key=lambda j: j.get("created_on") or "", reverse=True)
-    relevant_slugs = [j.get("slug") for j in relevant_jobs[:10]]
+    relevant_slugs = [j.get("slug") for j in relevant_jobs[:50]]
     assignments = fetch_assignments(tuple(relevant_slugs))
     return {
         "calls": calls,
@@ -487,6 +493,9 @@ def render_sidebar():
     """Sidebar mit Wochen-Selector. Gibt den gewaehlten 'today' (datetime) zurueck."""
     today = dt.datetime.now()
     today_effective = today  # safe default
+    # Standard: Snapshot aus cockpit_data.json. Wird nur fuer EINEN Lauf auf True
+    # gesetzt, wenn der Live-Button geklickt wurde (siehe unten). Reset bei jedem Lauf.
+    st.session_state["force_live"] = False
     with st.sidebar:
         st.markdown("### Synergy Cockpit")
         st.caption("Zielerreichung Kevin & Robin")
@@ -519,10 +528,27 @@ def render_sidebar():
             today_effective = today
 
         st.markdown("---")
-        if st.button("🔄 Daten jetzt neu laden", use_container_width=True):
+        if st.button("🔄 Daten jetzt live ziehen", use_container_width=True):
+            # Cache leeren -> load_all_data pullt frisch. force_live -> Snapshot
+            # wird umgangen. Kein rerun noetig: render_sidebar laeuft vor den
+            # Karten, die das Flag im selben Lauf lesen.
             st.cache_data.clear()
-            st.rerun()
-        st.caption("Auto-Refresh alle 15 Min")
+            st.session_state["force_live"] = True
+
+        # Daten-Stand sichtbar machen, damit klar ist wie frisch die Zahlen sind.
+        if st.session_state.get("force_live"):
+            st.caption("⏱️ Stand: gerade live aus Aircall + CRM gezogen")
+        else:
+            cache = load_cockpit_cache()
+            gen = (cache or {}).get("generated_at", "")
+            if gen:
+                try:
+                    gen_dt = dt.datetime.strptime(gen[:19], "%Y-%m-%dT%H:%M:%S")
+                    st.caption(f"⏱️ Daten-Stand: {gen_dt.strftime('%d.%m. %H:%M')} · Auto-Refresh alle 15 Min")
+                except Exception:
+                    st.caption("Auto-Refresh alle 15 Min")
+            else:
+                st.caption("Auto-Refresh alle 15 Min")
         st.markdown("---")
         st.caption("**Daten-Quellen:** Aircall · Recruit CRM")
         st.caption("**Kandidaten-Calls per Handy** sind im Tracking nicht erfasst.")
