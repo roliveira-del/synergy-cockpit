@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-06-09T13:15:01",
+  "generated_at": "2026-06-09T13:30:00",
   "weeks": {
     "2026-KW24": {
       "start": "2026-06-08T00:00:00",
       "end": "2026-06-14T23:59:59",
       "Kevin": {
-        "outbound": 63,
+        "outbound": 67,
         "wirk_calls": 8,
-        "answered_outbound": 43,
-        "duration_sec": 4685,
-        "total_calls": 63,
+        "answered_outbound": 47,
+        "duration_sec": 4916,
+        "total_calls": 67,
         "neue_kandidaten": 3,
         "neue_jobs": 0,
         "neue_kunden": 0,
@@ -19,7 +19,7 @@
         "deals": 0,
         "per_day_calls": {
           "2026-06-08": 49,
-          "2026-06-09": 14
+          "2026-06-09": 18
         },
         "per_day_wirk": {
           "2026-06-08": 6,
@@ -28,8 +28,8 @@
         "per_day_kandidaten": {
           "2026-06-09": 3
         },
-        "connect_rate": 68.25396825396825,
-        "avg_dur_min": 1.2394179894179895
+        "connect_rate": 70.1492537313433,
+        "avg_dur_min": 1.2228855721393035
       },
       "Robin": {
         "outbound": 63,
@@ -322,11 +322,11 @@
     "start": "2026-06-01T00:00:00",
     "end": "2026-06-30T23:59:59",
     "Kevin": {
-      "outbound": 205,
+      "outbound": 209,
       "wirk_calls": 25,
-      "answered_outbound": 134,
-      "duration_sec": 18571,
-      "total_calls": 209,
+      "answered_outbound": 138,
+      "duration_sec": 18802,
+      "total_calls": 213,
       "neue_kandidaten": 39,
       "neue_jobs": 5,
       "neue_kunden": 2,
@@ -340,7 +340,7 @@
         "2026-06-04": 48,
         "2026-06-05": 24,
         "2026-06-08": 49,
-        "2026-06-09": 14
+        "2026-06-09": 18
       },
       "per_day_wirk": {
         "2026-06-02": 6,
@@ -357,8 +357,8 @@
         "2026-06-04": 3,
         "2026-06-02": 23
       },
-      "connect_rate": 65.3658536585366,
-      "avg_dur_min": 1.4809409888357257
+      "connect_rate": 66.02870813397129,
+      "avg_dur_min": 1.471205007824726
     },
     "Robin": {
       "outbound": 235,
