@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-06-10T17:00:01",
+  "generated_at": "2026-06-10T17:15:01",
   "weeks": {
     "2026-KW24": {
       "start": "2026-06-08T00:00:00",
       "end": "2026-06-14T23:59:59",
       "Kevin": {
-        "outbound": 121,
+        "outbound": 122,
         "wirk_calls": 15,
-        "answered_outbound": 87,
-        "duration_sec": 11939,
-        "total_calls": 125,
+        "answered_outbound": 88,
+        "duration_sec": 11960,
+        "total_calls": 126,
         "neue_kandidaten": 4,
         "neue_jobs": 0,
         "neue_kunden": 0,
@@ -20,7 +20,7 @@
         "per_day_calls": {
           "2026-06-08": 49,
           "2026-06-09": 39,
-          "2026-06-10": 37
+          "2026-06-10": 38
         },
         "per_day_wirk": {
           "2026-06-08": 6,
@@ -31,8 +31,8 @@
           "2026-06-10": 1,
           "2026-06-09": 3
         },
-        "connect_rate": 71.900826446281,
-        "avg_dur_min": 1.5918666666666668
+        "connect_rate": 72.1311475409836,
+        "avg_dur_min": 1.582010582010582
       },
       "Robin": {
         "outbound": 106,
@@ -325,11 +325,11 @@
     "start": "2026-06-01T00:00:00",
     "end": "2026-06-30T23:59:59",
     "Kevin": {
-      "outbound": 263,
+      "outbound": 264,
       "wirk_calls": 32,
-      "answered_outbound": 178,
-      "duration_sec": 25825,
-      "total_calls": 271,
+      "answered_outbound": 179,
+      "duration_sec": 25846,
+      "total_calls": 272,
       "neue_kandidaten": 40,
       "neue_jobs": 5,
       "neue_kunden": 2,
@@ -344,7 +344,7 @@
         "2026-06-05": 24,
         "2026-06-08": 49,
         "2026-06-09": 39,
-        "2026-06-10": 37
+        "2026-06-10": 38
       },
       "per_day_wirk": {
         "2026-06-02": 6,
@@ -363,8 +363,8 @@
         "2026-06-04": 3,
         "2026-06-02": 23
       },
-      "connect_rate": 67.68060836501901,
-      "avg_dur_min": 1.5882533825338254
+      "connect_rate": 67.8030303030303,
+      "avg_dur_min": 1.5837009803921567
     },
     "Robin": {
       "outbound": 278,
