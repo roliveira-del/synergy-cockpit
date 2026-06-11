@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-06-11T16:00:00",
+  "generated_at": "2026-06-11T16:15:00",
   "weeks": {
     "2026-KW24": {
       "start": "2026-06-08T00:00:00",
@@ -38,11 +38,11 @@
         "avg_dur_min": 1.6880614657210402
       },
       "Robin": {
-        "outbound": 137,
-        "wirk_calls": 22,
-        "answered_outbound": 87,
-        "duration_sec": 13797,
-        "total_calls": 138,
+        "outbound": 138,
+        "wirk_calls": 23,
+        "answered_outbound": 88,
+        "duration_sec": 14108,
+        "total_calls": 139,
         "neue_kandidaten": 6,
         "neue_jobs": 0,
         "neue_kunden": 0,
@@ -53,18 +53,18 @@
         "per_day_calls": {
           "2026-06-08": 48,
           "2026-06-09": 59,
-          "2026-06-11": 31
+          "2026-06-11": 32
         },
         "per_day_wirk": {
           "2026-06-08": 9,
           "2026-06-09": 10,
-          "2026-06-11": 3
+          "2026-06-11": 4
         },
         "per_day_kandidaten": {
           "2026-06-09": 6
         },
-        "connect_rate": 63.503649635036496,
-        "avg_dur_min": 1.666304347826087
+        "connect_rate": 63.76811594202898,
+        "avg_dur_min": 1.6916067146282974
       }
     },
     "2026-KW23": {
@@ -375,11 +375,11 @@
       "avg_dur_min": 1.6357142857142857
     },
     "Robin": {
-      "outbound": 309,
-      "wirk_calls": 50,
-      "answered_outbound": 205,
-      "duration_sec": 28324,
-      "total_calls": 310,
+      "outbound": 310,
+      "wirk_calls": 51,
+      "answered_outbound": 206,
+      "duration_sec": 28635,
+      "total_calls": 311,
       "neue_kandidaten": 13,
       "neue_jobs": 10,
       "neue_kunden": 0,
@@ -395,7 +395,7 @@
         "2026-06-05": 34,
         "2026-06-08": 48,
         "2026-06-09": 59,
-        "2026-06-11": 31
+        "2026-06-11": 32
       },
       "per_day_wirk": {
         "2026-06-01": 6,
@@ -405,7 +405,7 @@
         "2026-06-05": 4,
         "2026-06-08": 9,
         "2026-06-09": 10,
-        "2026-06-11": 3
+        "2026-06-11": 4
       },
       "per_day_kandidaten": {
         "2026-06-09": 6,
@@ -413,8 +413,8 @@
         "2026-06-04": 3,
         "2026-06-01": 2
       },
-      "connect_rate": 66.34304207119742,
-      "avg_dur_min": 1.5227956989247313
+      "connect_rate": 66.45161290322581,
+      "avg_dur_min": 1.5345659163987138
     }
   }
 }
