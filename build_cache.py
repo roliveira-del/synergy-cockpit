@@ -218,6 +218,21 @@ for offset in range(0, 5):
         "Kevin": aggregate_for_period("Kevin", week_start, week_end),
         "Robin": aggregate_for_period("Robin", week_start, week_end),
     }
+# Tagesaggregate fuer alle Tage der vorberechneten Wochen (Tages-To-Dos + Wochenansicht)
+out_data["days"] = {}
+for key, w in out_data["weeks"].items():
+    ws = dt.datetime.fromisoformat(w["start"])
+    for i in range(7):
+        day_start = ws + dt.timedelta(days=i)
+        if day_start.date() > today.date():
+            break
+        day_end = day_start.replace(hour=23, minute=59, second=59)
+        dkey = day_start.strftime("%Y-%m-%d")
+        out_data["days"][dkey] = {
+            "Kevin": aggregate_for_period("Kevin", day_start, day_end),
+            "Robin": aggregate_for_period("Robin", day_start, day_end),
+        }
+
 # Monatsdaten (current)
 month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 next_month = month_start.replace(day=28) + dt.timedelta(days=4)

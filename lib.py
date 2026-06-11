@@ -21,7 +21,22 @@ TARGETS = {
         "deals": 2, "interviews": 16, "sendouts": 24,
         "neue_jobs": 20, "neue_kunden": 4,
     },
+    # Wochenziel / 5 Arbeitstage, krumme Werte aufgerundet
+    "daily": {
+        "outbound": 45, "wirk_calls": 5, "neue_kandidaten": 4,
+        "assignments": 2, "sendouts": 1, "neue_jobs": 1,
+    },
 }
+
+# Reihenfolge + Labels fuer Tages-To-Dos und Wochenansicht
+METRICS = [
+    ("outbound", "📞", "Cold Calls"),
+    ("wirk_calls", "☎️", "Wirk-Calls"),
+    ("neue_kandidaten", "👥", "Kandidaten ins CRM"),
+    ("assignments", "🔗", "Kandidaten auf Jobs"),
+    ("sendouts", "📤", "Sendouts"),
+    ("neue_jobs", "📋", "Neue Jobs"),
+]
 
 ASSIGNMENT_STATUS = {1, 613655, 613656, 613657, 613658, 613659, 613660, 613661, 613662, 8}
 INTERVIEW_STATUS = {613655, 613656, 613657}
@@ -123,6 +138,41 @@ def get_period_from_cache(person, period_start, period_end):
     if m.get("start", "")[:10] == start_d and m.get("end", "")[:10] == end_d:
         return m.get(person)
     return None
+
+def get_day_from_cache(person, day_str):
+    """Holt das Tagesaggregat einer Person aus cockpit_data.json. None wenn nicht da."""
+    if st.session_state.get("force_live"):
+        return None
+    data = load_cockpit_cache()
+    if not data:
+        return None
+    return (data.get("days", {}).get(day_str) or {}).get(person)
+
+def get_week_days(person, week_start, today):
+    """Tagesaggregate Mo-Fr einer Woche als dict {YYYY-MM-DD: agg|None}.
+
+    Cache zuerst, Live-Pull als Fallback fuer fehlende vergangene Tage.
+    Zukunftstage bleiben None.
+    """
+    days = {}
+    missing = []
+    for i in range(5):
+        d = week_start + dt.timedelta(days=i)
+        key = d.strftime("%Y-%m-%d")
+        if d.date() > today.date():
+            days[key] = None
+            continue
+        agg = get_day_from_cache(person, key)
+        if agg is None:
+            missing.append((key, d))
+        days[key] = agg
+    if missing:
+        data = load_all_data(today.replace(microsecond=0).isoformat())
+        for key, d in missing:
+            day_start = d.replace(hour=0, minute=0, second=0, microsecond=0)
+            day_end = d.replace(hour=23, minute=59, second=59, microsecond=0)
+            days[key] = aggregate_person(person, data, day_start, day_end)
+    return days
 
 def is_pause_day(person, day_str):
     """True wenn die Person an diesem Tag (YYYY-MM-DD) eine Pause hat."""
@@ -391,49 +441,149 @@ def deals_hero(person, value, target, days_left):
     </div>
     """)
 
-def render_day_heatmap(per_day_kandidaten, per_day_wirk, week_start, today, person=None):
-    days = [week_start + dt.timedelta(days=i) for i in range(5)]
-    cells = []
-    for d in days:
-        key = d.strftime("%Y-%m-%d")
-        kand = per_day_kandidaten.get(key, 0)
-        wirk = per_day_wirk.get(key, 0)
-        is_future = d.date() > today.date()
-        is_pause = person and is_pause_day(person, key)
-        if is_future:
-            bg, txt_color = "#f1f5f9", "#cbd5e1"
-            content = f"<div style='font-size: 28px; color: {txt_color};'>·</div>"
-        elif is_pause:
-            reason = pause_reason(person, key)
-            bg, txt_color = "#e2e8f0", "#64748b"
-            content = f"<div style='font-size: 22px;'>⏸️</div><div style='font-size: 11px; margin-top: 4px;'>Pause</div><div style='font-size: 10px; margin-top: 2px; color: #64748b;'>{reason}</div>"
-        elif kand == 0 and wirk == 0:
-            bg, txt_color = "#fee2e2", "#991b1b"
-            content = f"<div style='font-size: 24px;'>🔴</div><div style='font-size: 11px; margin-top: 4px;'>Null-Tag</div>"
-        elif wirk >= 5:
-            bg, txt_color = "#dcfce7", "#166534"
-            content = f"<div style='font-size: 28px; font-weight: 900;'>{wirk}</div><div style='font-size: 11px;'>Wirk-Calls</div><div style='font-size: 12px; margin-top: 4px;'>{kand} ins CRM</div>"
-        elif wirk >= 2:
-            bg, txt_color = "#fef3c7", "#854d0e"
-            content = f"<div style='font-size: 28px; font-weight: 900;'>{wirk}</div><div style='font-size: 11px;'>Wirk-Calls</div><div style='font-size: 12px; margin-top: 4px;'>{kand} ins CRM</div>"
-        else:
-            bg, txt_color = "#fee2e2", "#991b1b"
-            content = f"<div style='font-size: 28px; font-weight: 900;'>{wirk}</div><div style='font-size: 11px;'>Wirk-Calls</div><div style='font-size: 12px; margin-top: 4px;'>{kand} ins CRM</div>"
-        cells.append(clean_html(f"""<div style="background: {bg}; padding: 14px; border-radius: 10px; text-align: center; color: {txt_color};">
-            <div style="font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; margin-bottom: 4px;">{d.strftime('%a %d.%m')}</div>
-            {content}
-        </div>"""))
-    return "<div style='display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;'>" + "".join(cells) + "</div>"
+DAY_NAMES = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"]
+DAY_SHORT = ["Mo", "Di", "Mi", "Do", "Fr"]
+
+def render_daily_todos(person, day_agg, day_dt, is_today=True):
+    """Tages-To-Do-Karte: Checkliste aller 6 Tagesziele + Fortschritts-Ring."""
+    accent = USERS[person]["color"]
+    daily = TARGETS["daily"]
+    day_str = day_dt.strftime("%Y-%m-%d")
+
+    day_name = DAY_NAMES[day_dt.weekday()] if day_dt.weekday() < 5 else day_dt.strftime("%d.%m.")
+
+    if is_pause_day(person, day_str):
+        reason = pause_reason(person, day_str)
+        return clean_html(f"""
+        <div style="background: linear-gradient(135deg, #334155 0%, #475569 100%); padding: 28px; border-radius: 18px; color: white; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15,23,42,0.18);">
+          <div style="font-size: 12px; font-weight: 700; color: #cbd5e1; letter-spacing: 2px;">{'HEUTE' if is_today else (day_name + ' ' + day_dt.strftime('%d.%m.')).upper()}</div>
+          <div style="font-size: 28px; font-weight: 800; margin-top: 6px;">⏸️ Pause: {reason}</div>
+          <div style="font-size: 14px; color: #cbd5e1; margin-top: 4px;">Keine Tagesziele für diesen Tag. Gute Erholung!</div>
+        </div>
+        """)
+
+    done = 0
+    rows_html = ""
+    for key, icon, label in METRICS:
+        target = daily[key]
+        val = (day_agg or {}).get(key, 0)
+        ok = val >= target
+        if ok:
+            done += 1
+        pct = min(val / target * 100, 100) if target else 0
+        check = "✅" if ok else "⬜"
+        val_color = "#4ade80" if ok else "white"
+        bar_color = "#4ade80" if ok else (accent if pct > 0 else "rgba(255,255,255,0.15)")
+        rows_html += f"""
+        <div style="display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+          <div style="font-size: 17px; width: 24px;">{check}</div>
+          <div style="flex: 1; font-size: 14px; font-weight: 600; color: {'#94a3b8' if ok else '#e2e8f0'}; {'text-decoration: line-through; text-decoration-color: rgba(148,163,184,0.6);' if ok else ''}">{icon} {label}</div>
+          <div style="width: 90px; background: rgba(255,255,255,0.1); border-radius: 4px; height: 7px; overflow: hidden;">
+            <div style="background: {bar_color}; width: {pct}%; height: 100%;"></div>
+          </div>
+          <div style="font-size: 15px; font-weight: 800; color: {val_color}; width: 64px; text-align: right;">{val} <span style="font-size: 12px; color: #64748b; font-weight: 600;">/ {target}</span></div>
+        </div>
+        """
+
+    total = len(METRICS)
+    ring_pct = done / total * 100
+    ring_color = "#4ade80" if done == total else accent
+    if done == total:
+        headline, sub = "Alle Tagesziele erledigt! 🎉", "Starker Tag. Weiter so."
+    elif done >= total / 2:
+        headline, sub = f"{done} von {total} Zielen geschafft", "Gut dabei, der Rest ist machbar."
+    else:
+        headline, sub = f"{done} von {total} Zielen geschafft", "Da geht heute noch was!"
+    title = f"HEUTE · {day_name}, {day_dt.strftime('%d.%m.')}" if is_today else f"{day_name}, {day_dt.strftime('%d.%m.')}".upper()
+
+    return clean_html(f"""
+    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #243049 100%); padding: 26px 28px; border-radius: 18px; color: white; margin-bottom: 20px; box-shadow: 0 8px 24px rgba(15,23,42,0.22); border: 1px solid rgba(255,255,255,0.06);">
+      <div style="display: flex; gap: 28px; align-items: center; flex-wrap: wrap;">
+        <div style="flex: 0 0 auto; text-align: center;">
+          <div style="font-size: 11px; font-weight: 700; color: {accent}; letter-spacing: 2px; margin-bottom: 12px;">{title}</div>
+          <div style="width: 118px; height: 118px; border-radius: 50%; background: conic-gradient({ring_color} {ring_pct}%, rgba(255,255,255,0.1) 0); display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+            <div style="width: 92px; height: 92px; border-radius: 50%; background: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <div style="font-size: 28px; font-weight: 900; line-height: 1;">{done}<span style="font-size: 16px; color: #64748b; font-weight: 700;">/{total}</span></div>
+              <div style="font-size: 9px; font-weight: 700; color: #94a3b8; letter-spacing: 1.5px; margin-top: 3px;">ZIELE</div>
+            </div>
+          </div>
+          <div style="font-size: 13px; font-weight: 700; margin-top: 12px;">{headline}</div>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 2px;">{sub}</div>
+        </div>
+        <div style="flex: 1; min-width: 320px;">
+          <div style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">✔️ Deine Tages-To-Dos</div>
+          {rows_html}
+        </div>
+      </div>
+    </div>
+    """)
+
+def render_week_view(person, days, week_start, today, week_agg):
+    """Wochenansicht: Grid Metrik x Wochentag mit Ampel-Zellen, Wochensumme und Ziel."""
+    daily = TARGETS["daily"]
+    weekly = TARGETS["weekly"]
+    day_dates = [week_start + dt.timedelta(days=i) for i in range(5)]
+    today_str = today.strftime("%Y-%m-%d")
+
+    header_cells = "<div></div>"
+    for i, d in enumerate(day_dates):
+        is_today = d.strftime("%Y-%m-%d") == today_str
+        bg = "background: #0f172a; color: white; border-radius: 8px;" if is_today else "color: #64748b;"
+        header_cells += f"""<div style="text-align: center; padding: 8px 2px; font-size: 12px; font-weight: 800; {bg}">{DAY_SHORT[i]}<div style="font-size: 10px; font-weight: 600; opacity: 0.7;">{d.strftime('%d.%m.')}</div></div>"""
+    header_cells += """<div style="text-align: center; padding: 8px 2px; font-size: 12px; font-weight: 800; color: #0f172a;">Σ Woche</div>"""
+
+    body = ""
+    for key, icon, label in METRICS:
+        cells = f"""<div style="display: flex; align-items: center; font-size: 13px; font-weight: 600; color: #334155; padding: 4px 6px 4px 0;">{icon}&nbsp;{label}</div>"""
+        for d in day_dates:
+            dkey = d.strftime("%Y-%m-%d")
+            agg = days.get(dkey)
+            is_today = dkey == today_str
+            border = f"box-shadow: inset 0 0 0 2px #0f172a;" if is_today else ""
+            if d.date() > today.date():
+                cells += f"""<div style="text-align: center; padding: 10px 2px; background: #f8fafc; border-radius: 8px; color: #cbd5e1; font-size: 14px;">·</div>"""
+                continue
+            if is_pause_day(person, dkey):
+                cells += f"""<div style="text-align: center; padding: 10px 2px; background: #e2e8f0; border-radius: 8px; font-size: 13px;" title="{pause_reason(person, dkey)}">⏸️</div>"""
+                continue
+            val = (agg or {}).get(key, 0)
+            target = daily[key]
+            pct = val / target if target else 0
+            if pct >= 1.0:
+                bg, fg = "#dcfce7", "#166534"
+            elif pct >= 0.5:
+                bg, fg = "#fef3c7", "#854d0e"
+            else:
+                bg, fg = "#fee2e2", "#991b1b"
+            cells += f"""<div style="text-align: center; padding: 10px 2px; background: {bg}; border-radius: 8px; color: {fg}; font-size: 15px; font-weight: 800; {border}">{val}</div>"""
+        wval = week_agg.get(key, 0)
+        wtarget = weekly[key]
+        wcolor = status_color((wval / wtarget) if wtarget else 0)
+        cells += f"""<div style="text-align: center; padding: 10px 2px; background: #0f172a; border-radius: 8px; color: white; font-size: 14px; font-weight: 800;">{wval}<span style="font-size: 11px; color: #94a3b8; font-weight: 600;"> / {wtarget}</span><div style="height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 5px 6px 0 6px; overflow: hidden;"><div style="background: {wcolor}; width: {min((wval / wtarget) if wtarget else 0, 1) * 100}%; height: 100%;"></div></div></div>"""
+        body += f"""<div style="display: grid; grid-template-columns: 190px repeat(5, 1fr) 1.4fr; gap: 6px; margin-bottom: 6px;">{cells}</div>"""
+
+    return clean_html(f"""
+    <div style="background: white; padding: 22px 24px; border-radius: 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px;">
+      <div style="display: grid; grid-template-columns: 190px repeat(5, 1fr) 1.4fr; gap: 6px; margin-bottom: 8px;">{header_cells}</div>
+      {body}
+      <div style="font-size: 11px; color: #94a3b8; margin-top: 10px;">Ampel pro Tag gegen das Tagesziel (grün = geschafft, gelb = über 50 %, rot = drunter). Heutiger Tag ist umrandet, ⏸️ = Pause.</div>
+    </div>
+    """)
 
 def page_css():
     return """
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    html, body, [data-testid="stAppViewContainer"] * { font-family: 'Inter', -apple-system, sans-serif; }
     .main { background: #f8fafc; }
+    [data-testid="stAppViewContainer"] { background: linear-gradient(180deg, #eef2f7 0%, #f8fafc 240px); }
     .block-container { padding-top: 1.5rem; padding-bottom: 2rem; max-width: 1200px; }
     [data-testid="stHeader"] { background: transparent; }
-    [data-testid="stSidebar"] { background: #ffffff; }
-    h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 0; }
-    h2 { font-size: 18px; font-weight: 700; color: #334155; margin-top: 1.5rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    [data-testid="stSidebar"] { background: #ffffff; border-right: 1px solid #e2e8f0; }
+    h1 { font-size: 30px; font-weight: 900; color: #0f172a; margin-bottom: 0; letter-spacing: -0.5px; }
+    h2 { font-size: 15px; font-weight: 800; color: #475569; margin-top: 1.6rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1.2px; }
+    [data-testid="stMetric"] { background: white; padding: 16px 18px; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    [data-testid="stMetricLabel"] { font-weight: 600; color: #64748b; }
 </style>
 """
 
@@ -462,11 +612,32 @@ def render_person_page(person, today=None):
     st.markdown(f"# {person} · Wo stehst du?")
     st.caption(f"KW{week_start.isocalendar().week} · {week_start.strftime('%d.%m.')} bis {week_end.strftime('%d.%m.%Y')} · Stand {today.strftime('%H:%M')}")
 
+    # Tages-To-Dos: immer ganz oben. In der aktuellen Woche = heute (am Wochenende
+    # Rueckblick auf Freitag), in einer Vergangenheits-Woche = deren Freitag.
+    now = dt.datetime.now()
+    is_current_week = week_start.date() <= now.date() <= week_end.date()
+    todo_day = today
+    if todo_day.weekday() >= 5:
+        todo_day = todo_day - dt.timedelta(days=todo_day.weekday() - 4)
+    todo_key = todo_day.strftime("%Y-%m-%d")
+    day_agg = get_day_from_cache(person, todo_key)
+    if day_agg is None:
+        data = load_all_data(today.replace(microsecond=0).isoformat())
+        day_agg = aggregate_person(person, data,
+                                   todo_day.replace(hour=0, minute=0, second=0, microsecond=0),
+                                   todo_day.replace(hour=23, minute=59, second=59, microsecond=0))
+    st.markdown(render_daily_todos(person, day_agg, todo_day, is_today=(is_current_week and now.date() == todo_day.date())), unsafe_allow_html=True)
+
+    # Wochenansicht: jeder Tag der Woche gegen das Tagesziel
+    st.markdown("## 📅 Wochenansicht · Tag für Tag")
+    week_days = get_week_days(person, week_start, today)
+    st.markdown(render_week_view(person, week_days, week_start, today, week), unsafe_allow_html=True)
+
     # Hero
     st.markdown(deals_hero(person, month["deals"], TARGETS["monthly"]["deals"], days_left), unsafe_allow_html=True)
 
     # Wochen-KPIs
-    st.markdown("## Diese Woche")
+    st.markdown("## Diese Woche gesamt")
     col1, col2 = st.columns(2)
     with col1:
         st.markdown(big_kpi_card("Cold Calls", week["outbound"], TARGETS["weekly"]["outbound"], "📞"), unsafe_allow_html=True)
@@ -476,11 +647,6 @@ def render_person_page(person, today=None):
         st.markdown(big_kpi_card("Wirk-Calls (≥2 Min)", week["wirk_calls"], TARGETS["weekly"]["wirk_calls"], "☎️"), unsafe_allow_html=True)
         st.markdown(big_kpi_card("Kandidaten auf Jobs", week["assignments"], TARGETS["weekly"]["assignments"], "🔗"), unsafe_allow_html=True)
         st.markdown(big_kpi_card("Neue Jobs angelegt", week["neue_jobs"], TARGETS["weekly"]["neue_jobs"], "📋"), unsafe_allow_html=True)
-
-    # Tagesverteilung
-    st.markdown("## Deine Woche Tag für Tag")
-    st.markdown(render_day_heatmap(week["per_day_kandidaten"], week["per_day_wirk"], week_start, today, person=person), unsafe_allow_html=True)
-    st.caption("Pro Tag: Wirk-Calls und Kandidaten ins CRM. Null-Tage sind rot, weil kein Tag auf 0 stehen darf. Pause-Tage sind grau (Umzug, Urlaub, krank).")
 
     # Gespraechsqualitaet
     st.markdown("## Gesprächsqualität")

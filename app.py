@@ -5,9 +5,10 @@ Pro-Person-Seiten liegen unter pages/.
 import streamlit as st
 import datetime as dt
 from lib import (
-    USERS, TARGETS, page_css, render_sidebar,
+    USERS, TARGETS, METRICS, page_css, render_sidebar,
     load_all_data, aggregate_person, get_windows,
-    status_color, status_label, get_period_from_cache,
+    status_color, status_label, get_period_from_cache, get_day_from_cache,
+    is_pause_day, pause_reason,
 )
 
 st.set_page_config(page_title="Synergy Cockpit", page_icon="🎯", layout="wide")
@@ -39,6 +40,48 @@ def render_compact_card(col, person):
         if month is None:
             month = aggregate_person(person, data, month_start, month_end)
 
+    # Heute-Status: am Wochenende Rueckblick auf Freitag
+    accent = USERS[person]["color"]
+    todo_day = today if today.weekday() < 5 else today - dt.timedelta(days=today.weekday() - 4)
+    todo_key = todo_day.strftime("%Y-%m-%d")
+    day_agg = get_day_from_cache(person, todo_key)
+    if day_agg is None:
+        if data is None:
+            data = load_all_data(today.replace(microsecond=0).isoformat())
+        day_agg = aggregate_person(person, data,
+                                   todo_day.replace(hour=0, minute=0, second=0, microsecond=0),
+                                   todo_day.replace(hour=23, minute=59, second=59, microsecond=0))
+
+    if is_pause_day(person, todo_key):
+        today_html = f"""
+        <div style="background: #f1f5f9; padding: 14px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 13px; color: #64748b; font-weight: 600;">
+            ⏸️ Heute Pause: {pause_reason(person, todo_key)}
+        </div>
+        """
+    else:
+        done_today = 0
+        chips = ""
+        for key, icon, label in METRICS:
+            target = TARGETS["daily"][key]
+            val = (day_agg or {}).get(key, 0)
+            ok = val >= target
+            if ok:
+                done_today += 1
+            chip_bg = "#dcfce7" if ok else "#f1f5f9"
+            chip_fg = "#166534" if ok else "#64748b"
+            chips += f"""<div style="background: {chip_bg}; color: {chip_fg}; border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: 700;" title="{label}: {val} / {target}">{icon}<br>{val}/{target}</div>"""
+        ring_color = "#22c55e" if done_today == len(METRICS) else accent
+        today_label = "HEUTE" if today.weekday() < 5 else f"FREITAG ({todo_day.strftime('%d.%m.')})"
+        today_html = f"""
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 14px 16px; border-radius: 12px; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="font-size: 11px; font-weight: 800; color: #475569; letter-spacing: 1px;">✔️ {today_label} · TAGES-TO-DOS</div>
+                <div style="font-size: 12px; font-weight: 800; color: {ring_color};">{done_today}/{len(METRICS)} Ziele</div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;">{chips}</div>
+        </div>
+        """
+
     deals = month["deals"]
     deal_pct = (deals / TARGETS["monthly"]["deals"]) * 100
     deal_color = status_color(deal_pct / 100)
@@ -68,11 +111,12 @@ def render_compact_card(col, person):
         """
 
     html = f"""
-    <div style="background: white; padding: 24px; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 16px;">
+    <div style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 2px 8px rgba(15,23,42,0.07); margin-bottom: 16px; border-top: 4px solid {accent};">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
             <div style="font-size: 22px; font-weight: 800; color: #0f172a;">{person}</div>
             <div style="font-size: 11px; font-weight: 700; color: white; background: {deal_color}; padding: 4px 12px; border-radius: 12px;">{deal_status}</div>
         </div>
+        {today_html}
         <div style="background: #0f172a; padding: 16px; border-radius: 10px; color: white; margin-bottom: 16px;">
             <div style="font-size: 11px; color: #94a3b8; letter-spacing: 0.8px; font-weight: 600;">🎯 DEALS MONAT</div>
             <div style="font-size: 40px; font-weight: 900; line-height: 1;">{deals}<span style="font-size: 18px; color: #94a3b8; font-weight: 500;"> / {TARGETS['monthly']['deals']}</span></div>
