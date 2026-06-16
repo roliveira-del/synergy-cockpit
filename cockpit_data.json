@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-06-16T12:15:01",
+  "generated_at": "2026-06-16T12:30:01",
   "weeks": {
     "2026-KW25": {
       "start": "2026-06-15T00:00:00",
       "end": "2026-06-21T23:59:59",
       "Kevin": {
         "outbound": 17,
-        "wirk_calls": 5,
+        "wirk_calls": 6,
         "answered_outbound": 11,
-        "duration_sec": 1197,
+        "duration_sec": 2919,
         "total_calls": 18,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -21,11 +21,11 @@
           "2026-06-16": 18
         },
         "per_day_wirk": {
-          "2026-06-16": 5
+          "2026-06-16": 6
         },
         "per_day_kandidaten": {},
         "connect_rate": 64.70588235294117,
-        "avg_dur_min": 1.1083333333333334
+        "avg_dur_min": 2.7027777777777775
       },
       "Robin": {
         "outbound": 65,
@@ -335,9 +335,9 @@
     "end": "2026-06-30T23:59:59",
     "Kevin": {
       "outbound": 295,
-      "wirk_calls": 41,
+      "wirk_calls": 42,
       "answered_outbound": 199,
-      "duration_sec": 29826,
+      "duration_sec": 31548,
       "total_calls": 307,
       "neue_kandidaten": 41,
       "neue_jobs": 6,
@@ -367,7 +367,7 @@
         "2026-06-09": 5,
         "2026-06-10": 5,
         "2026-06-11": 3,
-        "2026-06-16": 5
+        "2026-06-16": 6
       },
       "per_day_kandidaten": {
         "2026-06-02": 23,
@@ -379,7 +379,7 @@
         "2026-06-04": 3
       },
       "connect_rate": 67.45762711864407,
-      "avg_dur_min": 1.6192182410423455
+      "avg_dur_min": 1.712703583061889
     },
     "Robin": {
       "outbound": 397,
@@ -481,9 +481,9 @@
     "2026-06-16": {
       "Kevin": {
         "outbound": 17,
-        "wirk_calls": 5,
+        "wirk_calls": 6,
         "answered_outbound": 11,
-        "duration_sec": 1197,
+        "duration_sec": 2919,
         "total_calls": 18,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -496,11 +496,11 @@
           "2026-06-16": 18
         },
         "per_day_wirk": {
-          "2026-06-16": 5
+          "2026-06-16": 6
         },
         "per_day_kandidaten": {},
         "connect_rate": 64.70588235294117,
-        "avg_dur_min": 1.1083333333333334
+        "avg_dur_min": 2.7027777777777775
       },
       "Robin": {
         "outbound": 23,
