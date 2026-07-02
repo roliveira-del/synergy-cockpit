@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-02T09:15:00",
+  "generated_at": "2026-07-02T09:30:01",
   "weeks": {
     "2026-KW27": {
       "start": "2026-06-29T00:00:00",
@@ -9,7 +9,7 @@
         "wirk_calls": 7,
         "answered_outbound": 48,
         "duration_sec": 8203,
-        "total_calls": 92,
+        "total_calls": 93,
         "neue_kandidaten": 8,
         "neue_jobs": 0,
         "neue_kunden": 0,
@@ -20,7 +20,8 @@
         "per_day_calls": {
           "2026-06-29": 34,
           "2026-06-30": 38,
-          "2026-07-01": 20
+          "2026-07-01": 20,
+          "2026-07-02": 1
         },
         "per_day_wirk": {
           "2026-06-29": 3,
@@ -32,7 +33,7 @@
           "2026-06-29": 5
         },
         "connect_rate": 56.470588235294116,
-        "avg_dur_min": 1.4860507246376813
+        "avg_dur_min": 1.4700716845878137
       },
       "Robin": {
         "outbound": 121,
@@ -348,7 +349,7 @@
       "wirk_calls": 1,
       "answered_outbound": 11,
       "duration_sec": 764,
-      "total_calls": 20,
+      "total_calls": 21,
       "neue_kandidaten": 0,
       "neue_jobs": 0,
       "neue_kunden": 0,
@@ -357,14 +358,15 @@
       "interviews": 0,
       "deals": 0,
       "per_day_calls": {
-        "2026-07-01": 20
+        "2026-07-01": 20,
+        "2026-07-02": 1
       },
       "per_day_wirk": {
         "2026-07-01": 1
       },
       "per_day_kandidaten": {},
       "connect_rate": 57.89473684210527,
-      "avg_dur_min": 0.6366666666666667
+      "avg_dur_min": 0.6063492063492063
     },
     "Robin": {
       "outbound": 40,
@@ -553,7 +555,7 @@
         "wirk_calls": 0,
         "answered_outbound": 0,
         "duration_sec": 0,
-        "total_calls": 0,
+        "total_calls": 1,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
         "neue_kunden": 0,
@@ -561,11 +563,13 @@
         "sendouts": 0,
         "interviews": 0,
         "deals": 0,
-        "per_day_calls": {},
+        "per_day_calls": {
+          "2026-07-02": 1
+        },
         "per_day_wirk": {},
         "per_day_kandidaten": {},
         "connect_rate": 0,
-        "avg_dur_min": 0
+        "avg_dur_min": 0.0
       },
       "Robin": {
         "outbound": 0,
