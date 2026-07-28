@@ -7,7 +7,8 @@ import datetime as dt
 from lib import (
     USERS, TARGETS, METRICS, page_css, render_sidebar,
     load_all_data, aggregate_person, get_windows,
-    status_color, status_label, get_period_from_cache, get_day_from_cache,
+    status_color, status_color_pair, status_label,
+    get_period_from_cache, get_day_from_cache,
     is_pause_day, pause_reason,
 )
 
@@ -18,10 +19,15 @@ today = render_sidebar()
 week_start, week_end, month_start, month_end = get_windows(today)
 days_left = max(0, (month_end.date() - today.date()).days)
 
-st.markdown(f"# Team-Uebersicht · KW{week_start.isocalendar().week}")
+st.markdown(f"# Team-Übersicht · KW{week_start.isocalendar().week}")
 st.caption(f"Woche {week_start.strftime('%d.%m.')} bis {week_end.strftime('%d.%m.%Y')} · Stand {today.strftime('%a %d.%m.%Y %H:%M')}")
 
-st.info("⬅️ Wähle in der Seitenleiste links **Kevin** oder **Robin**, um die persönliche Seite zu sehen.")
+st.markdown(
+    """<div class="sbc-card" style="padding: 14px 18px; margin: 14px 0 22px; box-shadow: none;
+    background: linear-gradient(90deg, #eff6ff, #ecfdf5); border-color: #dbe7f7; font-size: 13.5px; color: #334155;">
+    ⬅️  In der Seitenleiste <b>Kevin</b> oder <b>Robin</b> wählen für die persönliche Seite.</div>""",
+    unsafe_allow_html=True,
+)
 
 data = None  # lazy load - nur wenn Cache fehlt
 
@@ -54,8 +60,8 @@ def render_compact_card(col, person):
 
     if is_pause_day(person, todo_key):
         today_html = f"""
-        <div style="background: #f1f5f9; padding: 14px 16px; border-radius: 10px; margin-bottom: 16px; font-size: 13px; color: #64748b; font-weight: 600;">
-            ⏸️ Heute Pause: {pause_reason(person, todo_key)}
+        <div class="sbc-todo" style="font-size: 13px; color: #64748b; font-weight: 600;">
+            ⏸️  Heute Pause: {pause_reason(person, todo_key)}
         </div>
         """
     else:
@@ -67,64 +73,58 @@ def render_compact_card(col, person):
             ok = val >= target
             if ok:
                 done_today += 1
-            chip_bg = "#dcfce7" if ok else "#f1f5f9"
-            chip_fg = "#166534" if ok else "#64748b"
-            chips += f"""<div style="background: {chip_bg}; color: {chip_fg}; border-radius: 8px; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: 700;" title="{label}: {val} / {target}">{icon}<br>{val}/{target}</div>"""
-        ring_color = "#22c55e" if done_today == len(METRICS) else accent
+            chips += f"""<div class="sbc-chip {'ok' if ok else 'off'}" title="{label}: {val} / {target}">{icon}<br>{val}/{target}</div>"""
+        ring_color = "#10b981" if done_today == len(METRICS) else accent
         today_label = "HEUTE" if today.weekday() < 5 else f"FREITAG ({todo_day.strftime('%d.%m.')})"
         today_html = f"""
-        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 14px 16px; border-radius: 12px; margin-bottom: 16px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <div style="font-size: 11px; font-weight: 800; color: #475569; letter-spacing: 1px;">✔️ {today_label} · TAGES-TO-DOS</div>
+        <div class="sbc-todo">
+            <div class="sbc-row" style="margin-bottom: 11px;">
+                <div class="sbc-todo-head"><span class="sbc-ico-sm">✔️</span>{today_label} · TAGES-TO-DOS</div>
                 <div style="font-size: 12px; font-weight: 800; color: {ring_color};">{done_today}/{len(METRICS)} Ziele</div>
             </div>
-            <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;">{chips}</div>
+            <div class="sbc-chips">{chips}</div>
         </div>
         """
 
     deals = month["deals"]
     deal_pct = (deals / TARGETS["monthly"]["deals"]) * 100
-    deal_color = status_color(deal_pct / 100)
+    deal_color, deal_color_2 = status_color_pair(deal_pct / 100)
     deal_status = status_label(deal_pct / 100)
 
     rows = [
-        ("📞 Cold Calls", week["outbound"], TARGETS["weekly"]["outbound"]),
-        ("☎️ Wirk-Calls", week["wirk_calls"], TARGETS["weekly"]["wirk_calls"]),
-        ("👥 Kandidaten ins CRM", week["neue_kandidaten"], TARGETS["weekly"]["neue_kandidaten"]),
-        ("🔗 Kandidaten auf Jobs", week["assignments"], TARGETS["weekly"]["assignments"]),
-        ("📤 Sendouts", week["sendouts"], TARGETS["weekly"]["sendouts"]),
-        ("📋 Neue Jobs", week["neue_jobs"], TARGETS["weekly"]["neue_jobs"]),
+        ("📞", "Cold Calls", week["outbound"], TARGETS["weekly"]["outbound"]),
+        ("☎️", "Wirk-Calls", week["wirk_calls"], TARGETS["weekly"]["wirk_calls"]),
+        ("👥", "Kandidaten ins CRM", week["neue_kandidaten"], TARGETS["weekly"]["neue_kandidaten"]),
+        ("🔗", "Kandidaten auf Jobs", week["assignments"], TARGETS["weekly"]["assignments"]),
+        ("📤", "Sendouts", week["sendouts"], TARGETS["weekly"]["sendouts"]),
+        ("📋", "Neue Jobs", week["neue_jobs"], TARGETS["weekly"]["neue_jobs"]),
     ]
 
     rows_html = ""
-    for label, val, target in rows:
+    for icon, label, val, target in rows:
         pct = (val / target * 100) if target else 0
-        color = status_color(pct / 100)
+        color, color_2 = status_color_pair(pct / 100)
         rows_html += f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f1f5f9;">
-            <div style="font-size: 13px; color: #475569; flex: 1;">{label}</div>
-            <div style="font-size: 14px; font-weight: 700; color: #0f172a;">{val} / {target}</div>
-            <div style="width: 80px; background: #f1f5f9; border-radius: 4px; height: 6px; margin-left: 10px; overflow: hidden;">
-                <div style="background: {color}; width: {min(pct, 100)}%; height: 100%;"></div>
-            </div>
+        <div class="sbc-line" style="--c: {color}; --c2: {color_2};">
+            <div class="sbc-line-l"><span class="sbc-ico-sm">{icon}</span>{label}</div>
+            <div class="sbc-line-v">{val} / {target}</div>
+            <div class="sbc-line-t"><div class="sbc-fill" style="width: {min(pct, 100)}%;"></div></div>
         </div>
         """
 
     html = f"""
-    <div style="background: white; padding: 24px; border-radius: 16px; box-shadow: 0 2px 8px rgba(15,23,42,0.07); margin-bottom: 16px; border-top: 4px solid {accent};">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <div style="font-size: 22px; font-weight: 800; color: #0f172a;">{person}</div>
-            <div style="font-size: 11px; font-weight: 700; color: white; background: {deal_color}; padding: 4px 12px; border-radius: 12px;">{deal_status}</div>
+    <div class="sbc-card sbc-person" style="--c: {accent}; --c2: {deal_color_2};">
+        <div class="sbc-row" style="margin-bottom: 16px;">
+            <div class="sbc-person-name">{person}</div>
+            <div class="sbc-pill-solid" style="--c: {deal_color};">{deal_status}</div>
         </div>
         {today_html}
-        <div style="background: #0f172a; padding: 16px; border-radius: 10px; color: white; margin-bottom: 16px;">
-            <div style="font-size: 11px; color: #94a3b8; letter-spacing: 0.8px; font-weight: 600;">🎯 DEALS MONAT</div>
-            <div style="font-size: 40px; font-weight: 900; line-height: 1;">{deals}<span style="font-size: 18px; color: #94a3b8; font-weight: 500;"> / {TARGETS['monthly']['deals']}</span></div>
-            <div style="background: rgba(255,255,255,0.1); border-radius: 6px; height: 8px; margin-top: 10px; overflow: hidden;">
-                <div style="background: {deal_color}; width: {min(deal_pct, 100)}%; height: 100%;"></div>
-            </div>
+        <div class="sbc-mini" style="--c: {deal_color}; --c2: {deal_color_2};">
+            <div class="sbc-mini-cap"><span class="sbc-ico-sm">🎯</span>DEALS MONAT</div>
+            <div class="sbc-mini-num">{deals}<span> / {TARGETS['monthly']['deals']}</span></div>
+            <div class="sbc-hero-track" style="height: 8px; margin-top: 11px;"><div class="sbc-fill" style="width: {min(deal_pct, 100)}%;"></div></div>
         </div>
-        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">DIESE WOCHE</div>
+        <div class="sbc-todo-head" style="margin-bottom: 6px;">DIESE WOCHE</div>
         {rows_html}
     </div>
     """

@@ -386,9 +386,15 @@ def clean_html(html):
     return " ".join(line.strip() for line in html.split("\n") if line.strip())
 
 def status_color(pct):
-    if pct >= 1.0: return "#22c55e"
+    if pct >= 1.0: return "#10b981"
     if pct >= 0.5: return "#f59e0b"
-    return "#ef4444"
+    return "#f43f5e"
+
+def status_color_pair(pct):
+    """(Basisfarbe, hellere Variante) fuer die Verlaeufe der Fortschrittsbalken."""
+    if pct >= 1.0: return "#10b981", "#4ade80"
+    if pct >= 0.5: return "#f59e0b", "#fbbf24"
+    return "#f43f5e", "#fb7185"
 
 def status_label(pct):
     if pct >= 1.0: return "ON TRACK"
@@ -398,46 +404,40 @@ def status_label(pct):
 def big_kpi_card(label, value, target, icon):
     pct = (value / target) if target else 0
     pct_w = min(pct * 100, 100)
-    color = status_color(pct)
+    color, color_2 = status_color_pair(pct)
     label_status = status_label(pct)
+    rest = max(0, target - value)
+    foot_right = "Ziel erreicht ✓" if rest == 0 else f"noch {rest} bis Ziel"
     return clean_html(f"""
-    <div style="background: white; padding: 22px; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 14px; border-left: 5px solid {color};">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-        <div style="font-size: 13px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px;">{icon} {label}</div>
-        <div style="font-size: 11px; font-weight: 700; color: {color}; background: {color}22; padding: 3px 10px; border-radius: 10px;">{label_status}</div>
+    <div class="sbc-card sbc-kpi" style="--c: {color}; --c2: {color_2};">
+      <div class="sbc-row">
+        <div class="sbc-kpi-label"><span class="sbc-ico">{icon}</span>{label}</div>
+        <div class="sbc-pill">{label_status}</div>
       </div>
-      <div style="font-size: 44px; font-weight: 800; color: #0f172a; margin: 6px 0 0 0; line-height: 1;">
-        {value}<span style="font-size: 22px; color: #94a3b8; font-weight: 500;"> / {target}</span>
-      </div>
-      <div style="background: #f1f5f9; border-radius: 8px; height: 10px; overflow: hidden; margin-top: 14px;">
-        <div style="background: {color}; width: {pct_w}%; height: 100%; transition: width 0.5s;"></div>
-      </div>
-      <div style="font-size: 12px; color: #64748b; margin-top: 6px; font-weight: 500;">{int(pct*100)} % erreicht</div>
+      <div class="sbc-kpi-num">{value}<span class="sbc-kpi-target"> / {target}</span></div>
+      <div class="sbc-track"><div class="sbc-fill" style="width: {pct_w}%;"></div></div>
+      <div class="sbc-kpi-foot"><span>{int(pct*100)} % erreicht</span><span>{foot_right}</span></div>
     </div>
     """)
 
 def deals_hero(person, value, target, days_left):
     pct = (value / target) if target else 0
     pct_w = min(pct * 100, 100)
-    color = status_color(pct)
+    color, color_2 = status_color_pair(pct)
     label_status = status_label(pct)
     name = person.upper()
+    rest = max(0, target - value)
+    rest_txt = "Monatsziel geschafft 🎉" if rest == 0 else f"noch {rest} bis zum Monatsziel"
     return clean_html(f"""
-    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); padding: 32px 28px; border-radius: 16px; color: white; box-shadow: 0 4px 16px rgba(0,0,0,0.15); margin-bottom: 24px;">
-      <div style="font-size: 12px; font-weight: 700; color: #94a3b8; letter-spacing: 2px; margin-bottom: 4px;">{name}</div>
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div style="font-size: 14px; font-weight: 600; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.8px;">🎯 DEALS DIESEN MONAT</div>
-        <div style="font-size: 11px; font-weight: 700; color: white; background: {color}; padding: 4px 12px; border-radius: 12px;">{label_status}</div>
+    <div class="sbc-hero" style="--c: {color}; --c2: {color_2};">
+      <div class="sbc-hero-eyebrow">{name}</div>
+      <div class="sbc-row" style="margin-top: 6px;">
+        <div class="sbc-hero-title"><span class="sbc-ico-sm">🎯</span>Deals diesen Monat</div>
+        <div class="sbc-pill-solid">{label_status}</div>
       </div>
-      <div style="font-size: 72px; font-weight: 900; margin: 4px 0; line-height: 1;">
-        {value}<span style="font-size: 32px; color: #94a3b8; font-weight: 600;"> / {target}</span>
-      </div>
-      <div style="background: rgba(255,255,255,0.1); border-radius: 8px; height: 12px; overflow: hidden; margin-top: 18px;">
-        <div style="background: {color}; width: {pct_w}%; height: 100%;"></div>
-      </div>
-      <div style="font-size: 14px; color: #cbd5e1; margin-top: 10px; font-weight: 500;">
-        {int(pct*100)} % erreicht · noch {days_left} Tage im Monat
-      </div>
+      <div class="sbc-hero-num">{value}<span> / {target}</span></div>
+      <div class="sbc-hero-track"><div class="sbc-fill" style="width: {pct_w}%;"></div></div>
+      <div class="sbc-hero-foot">{int(pct*100)} % erreicht · {rest_txt} · noch {days_left} Tage im Monat</div>
     </div>
     """)
 
@@ -455,10 +455,10 @@ def render_today_banner(person, day_agg, day_dt, is_today=True):
     if is_pause_day(person, day_str):
         reason = pause_reason(person, day_str)
         return clean_html(f"""
-        <div style="background: linear-gradient(135deg, #334155 0%, #475569 100%); padding: 24px 28px; border-radius: 18px; color: white; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(15,23,42,0.18);">
-          <div style="font-size: 12px; font-weight: 700; color: #cbd5e1; letter-spacing: 2px;">{title}</div>
-          <div style="font-size: 26px; font-weight: 800; margin-top: 6px;">⏸️ Pause: {reason}</div>
-          <div style="font-size: 14px; color: #cbd5e1; margin-top: 4px;">Keine Tagesziele für diesen Tag. Gute Erholung!</div>
+        <div class="sbc-hero" style="padding: 26px 30px;">
+          <div class="sbc-hero-eyebrow">{title}</div>
+          <div class="sbc-today-h" style="margin-top: 8px;">⏸️ Pause: {reason}</div>
+          <div class="sbc-today-sub">Keine Tagesziele für diesen Tag. Gute Erholung!</div>
         </div>
         """)
 
@@ -476,17 +476,17 @@ def render_today_banner(person, day_agg, day_dt, is_today=True):
         headline, sub = "Noch kein Tagesziel erreicht", "Jetzt schlagartig loslegen! 📞"
 
     return clean_html(f"""
-    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #243049 100%); padding: 20px 28px; border-radius: 18px; color: white; margin-bottom: 18px; box-shadow: 0 8px 24px rgba(15,23,42,0.22); border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
-      <div style="width: 84px; height: 84px; border-radius: 50%; background: conic-gradient({ring_color} {ring_pct}%, rgba(255,255,255,0.1) 0); display: flex; align-items: center; justify-content: center; flex: 0 0 auto;">
-        <div style="width: 64px; height: 64px; border-radius: 50%; background: #0f172a; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-          <div style="font-size: 22px; font-weight: 900; line-height: 1;">{done}<span style="font-size: 13px; color: #64748b; font-weight: 700;">/{total}</span></div>
-          <div style="font-size: 8px; font-weight: 700; color: #94a3b8; letter-spacing: 1.2px; margin-top: 2px;">ZIELE</div>
+    <div class="sbc-hero sbc-today" style="--c: {accent}; --p: {ring_pct}%;">
+      <div class="sbc-ring" style="--c: {ring_color};">
+        <div class="sbc-ring-in">
+          <div class="sbc-ring-num">{done}<span>/{total}</span></div>
+          <div class="sbc-ring-cap">ZIELE</div>
         </div>
       </div>
       <div style="flex: 1; min-width: 220px;">
-        <div style="font-size: 12px; font-weight: 800; color: {accent}; letter-spacing: 2px;">{title}</div>
-        <div style="font-size: 24px; font-weight: 900; margin-top: 4px; line-height: 1.2;">{headline}</div>
-        <div style="font-size: 13px; color: #94a3b8; margin-top: 3px;">{sub} Unten siehst du jeden Tagesstand live.</div>
+        <div class="sbc-today-head">{title}</div>
+        <div class="sbc-today-h">{headline}</div>
+        <div class="sbc-today-sub">{sub} Unten siehst du jeden Tagesstand live.</div>
       </div>
     </div>
     """)
@@ -501,45 +501,40 @@ def render_week_view(person, days, week_start, today, week_agg):
     header_cells = "<div></div>"
     for i, d in enumerate(day_dates):
         is_today = d.strftime("%Y-%m-%d") == today_str
-        bg = "background: #0f172a; color: white; border-radius: 8px;" if is_today else "color: #64748b;"
-        header_cells += f"""<div style="text-align: center; padding: 8px 2px; font-size: 12px; font-weight: 800; {bg}">{DAY_SHORT[i]}<div style="font-size: 10px; font-weight: 600; opacity: 0.7;">{d.strftime('%d.%m.')}</div></div>"""
-    header_cells += """<div style="text-align: center; padding: 8px 2px; font-size: 12px; font-weight: 800; color: #0f172a;">Σ Woche</div>"""
+        cls = "sbc-hcell today" if is_today else "sbc-hcell"
+        header_cells += f"""<div class="{cls}">{DAY_SHORT[i]}<small>{d.strftime('%d.%m.')}</small></div>"""
+    header_cells += """<div class="sbc-hcell" style="color: #0b1220;">Σ Woche</div>"""
 
     body = ""
     for key, icon, label in METRICS:
-        cells = f"""<div style="display: flex; align-items: center; font-size: 13px; font-weight: 600; color: #334155; padding: 4px 6px 4px 0;">{icon}&nbsp;{label}</div>"""
+        cells = f"""<div class="sbc-mlabel"><span class="sbc-ico-sm">{icon}</span>{label}</div>"""
         for d in day_dates:
             dkey = d.strftime("%Y-%m-%d")
             agg = days.get(dkey)
-            is_today = dkey == today_str
-            border = f"box-shadow: inset 0 0 0 2px #0f172a;" if is_today else ""
+            today_cls = " today" if dkey == today_str else ""
             if d.date() > today.date():
-                cells += f"""<div style="text-align: center; padding: 10px 2px; background: #f8fafc; border-radius: 8px; color: #cbd5e1; font-size: 14px;">·</div>"""
+                cells += """<div class="sbc-cell void">·</div>"""
                 continue
             if is_pause_day(person, dkey):
-                cells += f"""<div style="text-align: center; padding: 10px 2px; background: #e2e8f0; border-radius: 8px; font-size: 13px;" title="{pause_reason(person, dkey)}">⏸️</div>"""
+                cells += f"""<div class="sbc-cell pause" title="{pause_reason(person, dkey)}">⏸️</div>"""
                 continue
             val = (agg or {}).get(key, 0)
             target = daily[key]
             pct = val / target if target else 0
-            if pct >= 1.0:
-                bg, fg = "#dcfce7", "#166534"
-            elif pct >= 0.5:
-                bg, fg = "#fef3c7", "#854d0e"
-            else:
-                bg, fg = "#fee2e2", "#991b1b"
-            cells += f"""<div style="text-align: center; padding: 10px 2px; background: {bg}; border-radius: 8px; color: {fg}; font-size: 15px; font-weight: 800; {border}">{val}</div>"""
+            tone = "ok" if pct >= 1.0 else ("mid" if pct >= 0.5 else "low")
+            cells += f"""<div class="sbc-cell {tone}{today_cls}">{val}</div>"""
         wval = week_agg.get(key, 0)
         wtarget = weekly[key]
-        wcolor = status_color((wval / wtarget) if wtarget else 0)
-        cells += f"""<div style="text-align: center; padding: 10px 2px; background: #0f172a; border-radius: 8px; color: white; font-size: 14px; font-weight: 800;">{wval}<span style="font-size: 11px; color: #94a3b8; font-weight: 600;"> / {wtarget}</span><div style="height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; margin: 5px 6px 0 6px; overflow: hidden;"><div style="background: {wcolor}; width: {min((wval / wtarget) if wtarget else 0, 1) * 100}%; height: 100%;"></div></div></div>"""
-        body += f"""<div style="display: grid; grid-template-columns: 190px repeat(5, 1fr) 1.4fr; gap: 6px; margin-bottom: 6px;">{cells}</div>"""
+        wpct = (wval / wtarget) if wtarget else 0
+        wcolor, wcolor_2 = status_color_pair(wpct)
+        cells += f"""<div class="sbc-sum" style="--c: {wcolor}; --c2: {wcolor_2};"><div class="sbc-sum-num">{wval}<span> / {wtarget}</span></div><div class="sbc-sum-track"><div class="sbc-fill" style="width: {min(wpct, 1) * 100}%;"></div></div></div>"""
+        body += f"""<div class="sbc-grid" style="margin-bottom: 7px;">{cells}</div>"""
 
     return clean_html(f"""
-    <div style="background: white; padding: 22px 24px; border-radius: 18px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); margin-bottom: 20px;">
-      <div style="display: grid; grid-template-columns: 190px repeat(5, 1fr) 1.4fr; gap: 6px; margin-bottom: 8px;">{header_cells}</div>
+    <div class="sbc-card" style="padding: 24px 26px;">
+      <div class="sbc-grid" style="margin-bottom: 9px;">{header_cells}</div>
       {body}
-      <div style="font-size: 11px; color: #94a3b8; margin-top: 10px;">Ampel pro Tag gegen das Tagesziel (grün = geschafft, gelb = über 50 %, rot = drunter). Heutiger Tag ist umrandet, ⏸️ = Pause.</div>
+      <div class="sbc-legend">Ampel pro Tag gegen das Tagesziel (grün = geschafft, gelb = über 50 %, rot = drunter). Heutiger Tag ist umrandet, ⏸️  = Pause.</div>
     </div>
     """)
 
@@ -547,16 +542,206 @@ def page_css():
     return """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-    html, body, [data-testid="stAppViewContainer"] * { font-family: 'Inter', -apple-system, sans-serif; }
-    .main { background: #f8fafc; }
-    [data-testid="stAppViewContainer"] { background: linear-gradient(180deg, #eef2f7 0%, #f8fafc 240px); }
-    .block-container { padding-top: 1.5rem; padding-bottom: 2rem; max-width: 1200px; }
+
+    /* ---------- Design-Tokens ---------- */
+    :root {
+        --ink:      #0b1220;
+        --ink-2:    #33415580;
+        --body:     #334155;
+        --muted:    #64748b;
+        --faint:    #94a3b8;
+        --line:     #e9eef6;
+        --surface:  #ffffff;
+        --surface-2:#f6f9fd;
+        --radius:   20px;
+        --radius-s: 12px;
+        --shadow-s: 0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.05);
+        --shadow-m: 0 1px 2px rgba(16,24,40,.04), 0 18px 36px -20px rgba(16,24,40,.32);
+        --shadow-l: 0 2px 4px rgba(16,24,40,.06), 0 32px 60px -28px rgba(15,23,42,.55);
+    }
+
+    html, body, [data-testid="stAppViewContainer"] * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+    /* Zahlen mit fester Breite, damit nichts springt wenn Werte hochzaehlen */
+    .sbc-num, .sbc-kpi-num, .sbc-hero-num, .sbc-cell, .sbc-sum-num { font-variant-numeric: tabular-nums; }
+
+    [data-testid="stAppViewContainer"] {
+        background:
+            radial-gradient(1100px 520px at 12% -12%, rgba(59,130,246,.13), transparent 62%),
+            radial-gradient(900px 460px at 92% -4%,  rgba(16,185,129,.13), transparent 58%),
+            linear-gradient(180deg, #f2f6fc 0%, #f8fafc 420px);
+    }
+    .block-container { padding-top: 1.6rem; padding-bottom: 3rem; max-width: 1240px; }
     [data-testid="stHeader"] { background: transparent; }
-    [data-testid="stSidebar"] { background: #ffffff; border-right: 1px solid #e2e8f0; }
-    h1 { font-size: 30px; font-weight: 900; color: #0f172a; margin-bottom: 0; letter-spacing: -0.5px; }
-    h2 { font-size: 15px; font-weight: 800; color: #475569; margin-top: 1.6rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 1.2px; }
-    [data-testid="stMetric"] { background: white; padding: 16px 18px; border-radius: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-    [data-testid="stMetricLabel"] { font-weight: 600; color: #64748b; }
+    [data-testid="stSidebar"] {
+        background: rgba(255,255,255,.82);
+        backdrop-filter: blur(14px);
+        border-right: 1px solid var(--line);
+    }
+    [data-testid="stSidebar"] hr { margin: .9rem 0; border-color: var(--line); }
+
+    h1 { font-size: 32px; font-weight: 900; color: var(--ink); margin-bottom: 0; letter-spacing: -.9px; }
+    [data-testid="stHeading"] h2, .stMarkdown h2, h2 {
+        font-size: 12.5px !important; font-weight: 800; color: var(--muted);
+        margin-top: 2rem; margin-bottom: .8rem; text-transform: uppercase; letter-spacing: 1.6px;
+    }
+    h2 img { width: 15px !important; height: 15px !important; vertical-align: -2px; }
+    [data-testid="stCaptionContainer"] p { color: var(--muted); }
+
+    /* Streamlit-Metriken an das Kartendesign angleichen */
+    [data-testid="stMetric"] {
+        background: var(--surface); padding: 18px 20px; border-radius: var(--radius-s);
+        border: 1px solid var(--line); box-shadow: var(--shadow-s);
+    }
+    [data-testid="stMetricLabel"] { font-weight: 600; color: var(--muted); }
+    [data-testid="stMetricValue"] { font-weight: 800; letter-spacing: -.5px; color: var(--ink); }
+
+    button[kind="secondary"] {
+        border-radius: 12px !important; border: 1px solid var(--line) !important;
+        font-weight: 700 !important; transition: transform .15s ease, box-shadow .15s ease;
+    }
+    button[kind="secondary"]:hover { transform: translateY(-1px); box-shadow: var(--shadow-s); }
+
+    /* ---------- Karten ---------- */
+    .sbc-card {
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow-m); padding: 24px; margin-bottom: 16px; position: relative; overflow: hidden;
+        animation: sbcIn .45s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes sbcIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @media (prefers-reduced-motion: reduce) { .sbc-card, .sbc-fill { animation: none !important; transition: none !important; } }
+
+    /* ---------- KPI-Karte ---------- */
+    .sbc-kpi { padding: 20px 22px 18px 22px; }
+    .sbc-kpi::before {
+        content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+        background: linear-gradient(180deg, var(--c2), var(--c));
+    }
+    .sbc-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .sbc-kpi-label {
+        display: flex; align-items: center; gap: 9px; font-size: 12.5px; font-weight: 700;
+        color: var(--muted); text-transform: uppercase; letter-spacing: .7px;
+    }
+    .sbc-ico {
+        width: 30px; height: 30px; border-radius: 9px; background: var(--surface-2);
+        border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: 15px;
+    }
+    .sbc-pill {
+        font-size: 10.5px; font-weight: 800; letter-spacing: .6px; padding: 4px 11px; border-radius: 999px;
+        color: var(--c); background: #f6f9fd; border: 1px solid var(--line); white-space: nowrap;
+        background: color-mix(in srgb, var(--c) 11%, white);
+        border-color: color-mix(in srgb, var(--c) 24%, white);
+    }
+    .sbc-kpi-num { font-size: 46px; font-weight: 850; color: var(--ink); line-height: 1; margin: 12px 0 0; letter-spacing: -2px; }
+    .sbc-kpi-target { font-size: 20px; color: var(--faint); font-weight: 600; letter-spacing: -.5px; }
+    .sbc-track { background: #eef2f7; border-radius: 999px; height: 8px; overflow: hidden; margin-top: 16px; }
+    .sbc-fill {
+        height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--c2), var(--c));
+        animation: sbcGrow .7s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes sbcGrow { from { width: 0 !important; } }
+    .sbc-kpi-foot {
+        display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);
+        margin-top: 9px; font-weight: 600;
+    }
+
+    /* ---------- Hero (Deals) ---------- */
+    .sbc-hero {
+        border-radius: 24px; padding: 30px 32px; color: #fff; margin-bottom: 22px; position: relative; overflow: hidden;
+        background:
+            radial-gradient(760px 300px at 88% -30%, rgba(56,189,248,.28), transparent 60%),
+            radial-gradient(520px 260px at 8% 120%, rgba(129,140,248,.24), transparent 62%),
+            linear-gradient(135deg, #0b1220 0%, #16233b 58%, #1d2c48 100%);
+        box-shadow: var(--shadow-l);
+        animation: sbcIn .45s cubic-bezier(.22,1,.36,1) both;
+    }
+    .sbc-hero-eyebrow { font-size: 11px; font-weight: 800; color: #8ca3c4; letter-spacing: 2.4px; }
+    .sbc-hero-title { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 700; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px; }
+    .sbc-hero-num { font-size: 74px; font-weight: 900; line-height: 1; margin: 6px 0 0; letter-spacing: -3.5px; }
+    .sbc-hero-num span { font-size: 30px; color: #8ca3c4; font-weight: 700; letter-spacing: -1px; }
+    .sbc-hero-track { background: rgba(255,255,255,.12); border-radius: 999px; height: 10px; overflow: hidden; margin-top: 20px; }
+    .sbc-hero-foot { font-size: 13.5px; color: #b6c4d8; margin-top: 11px; font-weight: 500; }
+    .sbc-pill-solid {
+        font-size: 10.5px; font-weight: 800; letter-spacing: .6px; padding: 5px 12px; border-radius: 999px;
+        color: #fff; background: var(--c); box-shadow: 0 6px 18px -6px var(--c);
+    }
+
+    /* ---------- Heute-Banner ---------- */
+    .sbc-today { display: flex; align-items: center; gap: 26px; flex-wrap: wrap; padding: 24px 30px; }
+    .sbc-ring {
+        width: 90px; height: 90px; border-radius: 50%; flex: 0 0 auto; display: flex; align-items: center; justify-content: center;
+        background: conic-gradient(var(--c) var(--p), rgba(255,255,255,.10) 0);
+    }
+    .sbc-ring-in {
+        width: 68px; height: 68px; border-radius: 50%; background: #0e1727;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+    }
+    .sbc-ring-num { font-size: 23px; font-weight: 900; line-height: 1; color: #fff; }
+    .sbc-ring-num span { font-size: 13px; color: #7d90ad; font-weight: 700; }
+    .sbc-ring-cap { font-size: 8px; font-weight: 800; color: #8ca3c4; letter-spacing: 1.4px; margin-top: 3px; }
+    .sbc-today-head { font-size: 11.5px; font-weight: 800; letter-spacing: 2.2px; color: var(--c); }
+    .sbc-today-h { font-size: 25px; font-weight: 900; margin-top: 5px; line-height: 1.2; letter-spacing: -.6px; }
+    .sbc-today-sub { font-size: 13px; color: #93a4bd; margin-top: 4px; }
+
+    /* ---------- Wochenraster ---------- */
+    .sbc-grid { display: grid; grid-template-columns: 190px repeat(5, 1fr) 1.45fr; gap: 7px; }
+    .sbc-hcell { text-align: center; padding: 9px 2px; font-size: 12px; font-weight: 800; color: var(--muted); border-radius: 10px; }
+    .sbc-hcell.today { background: var(--ink); color: #fff; }
+    .sbc-hcell small { display: block; font-size: 10px; font-weight: 600; opacity: .65; }
+    .sbc-mlabel { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 650; color: var(--body); padding: 4px 6px 4px 0; }
+    .sbc-ico-sm { flex: 0 0 auto; font-size: 14px; line-height: 1; }
+    .sbc-ico-sm img { width: 15px !important; height: 15px !important; }
+    .sbc-cell {
+        text-align: center; padding: 11px 2px; border-radius: 11px; font-size: 15px; font-weight: 800;
+        border: 1px solid transparent; transition: transform .12s ease;
+    }
+    .sbc-cell:hover { transform: translateY(-1px); }
+    .sbc-cell.today { box-shadow: 0 0 0 2px var(--ink); }
+    .sbc-cell.ok   { background: #e7f8ef; color: #0d7a48; border-color: #c9eeda; }
+    .sbc-cell.mid  { background: #fef4e0; color: #92600b; border-color: #fae4bb; }
+    .sbc-cell.low  { background: #feecef; color: #a8203c; border-color: #fbd3da; }
+    .sbc-cell.void { background: var(--surface-2); color: #cbd5e1; font-weight: 600; }
+    .sbc-cell.pause{ background: #e8edf5; }
+    .sbc-sum { text-align: center; padding: 11px 4px; border-radius: 11px; background: var(--ink); color: #fff; }
+    .sbc-sum-num { font-size: 14px; font-weight: 800; }
+    .sbc-sum-num span { font-size: 11px; color: #8ca3c4; font-weight: 600; }
+    .sbc-sum-track { height: 4px; background: rgba(255,255,255,.16); border-radius: 999px; margin: 6px 6px 0; overflow: hidden; }
+    .sbc-legend { font-size: 11.5px; color: var(--faint); margin-top: 14px; }
+
+    /* ---------- Team-Karte (Startseite) ---------- */
+    .sbc-person { border-top: 4px solid var(--c); padding-top: 22px; }
+    .sbc-person-name { font-size: 23px; font-weight: 850; color: var(--ink); letter-spacing: -.6px; }
+    .sbc-chips { display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px; }
+    .sbc-chip { border-radius: 10px; padding: 8px 4px; text-align: center; font-size: 11px; font-weight: 800; line-height: 1.5; }
+    .sbc-chip.ok  { background: #e7f8ef; color: #0d7a48; }
+    .sbc-chip.off { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+    .sbc-todo {
+        background: var(--surface-2); border: 1px solid var(--line); padding: 15px 17px;
+        border-radius: 14px; margin-bottom: 18px;
+    }
+    .sbc-todo-head { display: inline-flex; align-items: center; gap: 7px; font-size: 10.5px; font-weight: 800; color: var(--muted); letter-spacing: 1.3px; }
+    .sbc-mini {
+        background: linear-gradient(135deg, #0b1220, #1b2942); padding: 18px; border-radius: 14px; color: #fff; margin-bottom: 18px;
+    }
+    .sbc-mini-cap { display: inline-flex; align-items: center; gap: 7px; font-size: 10.5px; color: #8ca3c4; letter-spacing: 1.2px; font-weight: 700; }
+    .sbc-mini-num { font-size: 42px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+    .sbc-mini-num span { font-size: 18px; color: #8ca3c4; font-weight: 600; }
+    .sbc-line {
+        display: flex; justify-content: space-between; align-items: center; gap: 10px;
+        padding: 9px 0; border-bottom: 1px solid #f2f5fa;
+    }
+    .sbc-line:last-child { border-bottom: 0; }
+    .sbc-line-l { font-size: 13px; color: var(--body); flex: 1; display: flex; align-items: center; gap: 8px; }
+    .sbc-line-v { font-size: 14px; font-weight: 750; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .sbc-line-t { width: 84px; background: #eef2f7; border-radius: 999px; height: 6px; overflow: hidden; }
+
+    @media (max-width: 900px) {
+        .sbc-grid { grid-template-columns: 130px repeat(5, 1fr) 1.4fr; gap: 5px; }
+        .sbc-mlabel { font-size: 11.5px; }
+        .sbc-hero-num { font-size: 58px; }
+    }
 </style>
 """
 
@@ -617,7 +802,7 @@ def render_person_page(person, today=None):
 
     # Wochenansicht: jeder Tag der Woche gegen das Tagesziel, rechts Wochensumme vs. Wochenziel
     week_label = "Diese Woche" if is_current_week else f"KW{week_start.isocalendar().week}"
-    st.markdown(f"## 📅 {week_label} · Tag für Tag und Wochenziel")
+    st.markdown(f"## 📅  {week_label} · Tag für Tag und Wochenziel")
     week_days = get_week_days(person, week_start, today)
     st.markdown(render_week_view(person, week_days, week_start, today, week), unsafe_allow_html=True)
 
@@ -670,7 +855,7 @@ def render_sidebar():
             today_effective = today
 
         st.markdown("---")
-        if st.button("🔄 Daten jetzt live ziehen", use_container_width=True):
+        if st.button("🔄 Daten jetzt live ziehen", use_container_width=True):
             # Cache leeren -> load_all_data pullt frisch. force_live -> Snapshot
             # wird umgangen. Kein rerun noetig: render_sidebar laeuft vor den
             # Karten, die das Flag im selben Lauf lesen.
