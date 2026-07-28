@@ -1,2 +1,4 @@
-# Rebuild-Trigger 2026-06-11 v2: Heute-Ansicht als Hauptansicht
+# Rebuild-Trigger 2026-07-28 v3: Design-Refresh + Zeitzone Europe/Berlin
 streamlit==1.50.0
+# Sichert zoneinfo("Europe/Berlin") auch auf schlanken Container-Images ab
+tzdata

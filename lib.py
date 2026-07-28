@@ -5,6 +5,26 @@ from collections import Counter
 from pathlib import Path
 import streamlit as st
 
+# Streamlit Cloud laeuft auf UTC. Ohne feste Zone waere abends ab 22 Uhr
+# deutscher Zeit noch der Vortag "heute" -> falsche Tageszahlen.
+try:
+    from zoneinfo import ZoneInfo
+    _TZ = ZoneInfo("Europe/Berlin")
+except Exception:
+    _TZ = None
+
+def now_local():
+    """Aktuelle Zeit in Europe/Berlin, naiv (alle Vergleiche hier sind naiv)."""
+    if _TZ is None:
+        return dt.datetime.now()
+    return dt.datetime.now(_TZ).replace(tzinfo=None)
+
+def ts_local(ts):
+    """Unix-Timestamp -> naive Berliner Zeit."""
+    if _TZ is None:
+        return dt.datetime.fromtimestamp(ts)
+    return dt.datetime.fromtimestamp(ts, _TZ).replace(tzinfo=None)
+
 # ============== CONFIG ==============
 
 USERS = {
@@ -327,7 +347,7 @@ def aggregate_person(person, data, period_start, period_end):
         if user.get("id") != ac_id: continue
         started = c.get("started_at")
         if not started: continue
-        d = dt.datetime.fromtimestamp(started)
+        d = ts_local(started)
         if not in_range(d, period_start, period_end): continue
         day = d.strftime("%Y-%m-%d")
         u["total_calls"] += 1
@@ -748,7 +768,7 @@ def page_css():
 def render_person_page(person, today=None):
     """Volle Person-Seite mit Hero + KPIs + Heatmap."""
     if today is None:
-        today = dt.datetime.now()
+        today = now_local()
     week_start, week_end, month_start, month_end = get_windows(today)
     days_left = max(0, (month_end.date() - today.date()).days)
 
@@ -772,7 +792,7 @@ def render_person_page(person, today=None):
 
     # HEUTE = Hauptansicht. In der aktuellen Woche = heute (am Wochenende
     # Rueckblick auf Freitag), in einer Vergangenheits-Woche = deren Freitag.
-    now = dt.datetime.now()
+    now = now_local()
     is_current_week = week_start.date() <= now.date() <= week_end.date()
     todo_day = today
     if todo_day.weekday() >= 5:
@@ -818,7 +838,7 @@ def render_person_page(person, today=None):
 
 def render_sidebar():
     """Sidebar mit Wochen-Selector. Gibt den gewaehlten 'today' (datetime) zurueck."""
-    today = dt.datetime.now()
+    today = now_local()
     today_effective = today  # safe default
     # Standard: Snapshot aus cockpit_data.json. Wird nur fuer EINEN Lauf auf True
     # gesetzt, wenn der Live-Button geklickt wurde (siehe unten). Reset bei jedem Lauf.
