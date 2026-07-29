@@ -12,10 +12,24 @@ from pathlib import Path
 
 # Setup
 COCKPIT_DIR = Path(__file__).parent
+
+# Zugangsdaten: lokal aus ~/.tracker.env, in GitHub Actions aus den Secrets
+# (Umgebungsvariablen). Umgebungsvariablen haben Vorrang.
+KEYS = ("AIRCALL_API_ID", "AIRCALL_API_TOKEN", "RECRUITCRM_API_TOKEN")
 ENV = {}
-for line in (Path.home()/".tracker.env").read_text().splitlines():
-    if "=" in line and not line.startswith("#"):
-        k,v = line.split("=",1); ENV[k]=v
+env_file = Path.home() / ".tracker.env"
+if env_file.exists():
+    for line in env_file.read_text().splitlines():
+        if "=" in line and not line.startswith("#"):
+            k, v = line.split("=", 1); ENV[k] = v.strip()
+for k in KEYS:
+    if os.environ.get(k):
+        ENV[k] = os.environ[k].strip()
+
+fehlend = [k for k in KEYS if not ENV.get(k)]
+if fehlend:
+    sys.exit(f"Zugangsdaten fehlen: {', '.join(fehlend)}. "
+             f"Lokal in ~/.tracker.env eintragen, in GitHub Actions als Repository-Secret.")
 
 AIRCALL_AUTH = base64.b64encode(f"{ENV['AIRCALL_API_ID']}:{ENV['AIRCALL_API_TOKEN']}".encode()).decode()
 CRM_TOKEN = ENV['RECRUITCRM_API_TOKEN']
