@@ -69,9 +69,23 @@ def log(msg):
     print(f"[{dt.datetime.now().isoformat(timespec='seconds')}] {msg}", file=sys.stderr)
 
 # Pull
-log("Pull Aircall (last 60 days)...")
 today = dt.datetime.now()
-start_60 = (today - dt.timedelta(days=60)).replace(hour=0, minute=0, second=0, microsecond=0)
+
+# Das Cockpit zeigt 5 Kalenderwochen zurueck plus den laufenden Monat. Weiter
+# zurueck brauchen wir nichts, und jeder ueberfluessige Tag kostet Aircall-
+# Requests und damit Laufzeit. Frueheste Grenze ist der Montag der aeltesten
+# angezeigten Woche bzw. der Monatserste, je nachdem was frueher liegt.
+_aeltester_wochenanker = today - dt.timedelta(weeks=4)
+_aeltester_montag = (_aeltester_wochenanker
+                     - dt.timedelta(days=_aeltester_wochenanker.weekday())
+                     ).replace(hour=0, minute=0, second=0, microsecond=0)
+_monatserster = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+# Zwei Tage Puffer gegen Zeitzonen- und Randeffekte
+PULL_START = min(_aeltester_montag, _monatserster) - dt.timedelta(days=2)
+PULL_TAGE = (today.date() - PULL_START.date()).days
+
+log(f"Pull Aircall (ab {PULL_START:%Y-%m-%d}, {PULL_TAGE} Tage)...")
+start_60 = PULL_START
 end_today = today.replace(hour=23, minute=59, second=59)
 calls = []
 page = 1
@@ -135,8 +149,8 @@ while page <= 5:
     time.sleep(0.5)
 log(f"  -> {len(jobs)} Jobs")
 
-# Assignments fuer letzte 60 Tage + Open Jobs
-cutoff = today - dt.timedelta(days=60)
+# Assignments fuer den Auswertungszeitraum + Open Jobs
+cutoff = PULL_START
 relevant_jobs = [j for j in jobs if j.get("slug") and (
     (parse_dt(j.get("created_on")) and parse_dt(j.get("created_on")) >= cutoff)
     or (j.get("job_status") or {}).get("label") == "Open"
