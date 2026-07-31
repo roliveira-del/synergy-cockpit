@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-31T11:48:53",
+  "generated_at": "2026-07-31T12:00:54",
   "weeks": {
     "2026-KW31": {
       "start": "2026-07-27T00:00:00",
@@ -40,11 +40,11 @@
         "avg_dur_min": 0.6273946360153257
       },
       "Robin": {
-        "outbound": 178,
-        "wirk_calls": 22,
-        "answered_outbound": 101,
-        "duration_sec": 12119,
-        "total_calls": 179,
+        "outbound": 181,
+        "wirk_calls": 23,
+        "answered_outbound": 104,
+        "duration_sec": 12444,
+        "total_calls": 182,
         "neue_kandidaten": 21,
         "neue_jobs": 0,
         "neue_kunden": 0,
@@ -57,22 +57,22 @@
           "2026-07-28": 48,
           "2026-07-29": 40,
           "2026-07-30": 43,
-          "2026-07-31": 12
+          "2026-07-31": 15
         },
         "per_day_wirk": {
           "2026-07-27": 3,
           "2026-07-28": 7,
           "2026-07-29": 5,
           "2026-07-30": 6,
-          "2026-07-31": 1
+          "2026-07-31": 2
         },
         "per_day_kandidaten": {
           "2026-07-29": 1,
           "2026-07-30": 9,
           "2026-07-27": 11
         },
-        "connect_rate": 56.74157303370787,
-        "avg_dur_min": 1.1283985102420857
+        "connect_rate": 57.4585635359116,
+        "avg_dur_min": 1.1395604395604397
       }
     },
     "2026-KW30": {
@@ -440,11 +440,11 @@
       "avg_dur_min": 1.09745269286754
     },
     "Robin": {
-      "outbound": 638,
-      "wirk_calls": 92,
-      "answered_outbound": 377,
-      "duration_sec": 55376,
-      "total_calls": 642,
+      "outbound": 641,
+      "wirk_calls": 93,
+      "answered_outbound": 380,
+      "duration_sec": 55701,
+      "total_calls": 645,
       "neue_kandidaten": 46,
       "neue_jobs": 11,
       "neue_kunden": 52,
@@ -472,7 +472,7 @@
         "2026-07-28": 48,
         "2026-07-29": 40,
         "2026-07-30": 43,
-        "2026-07-31": 12
+        "2026-07-31": 15
       },
       "per_day_wirk": {
         "2026-07-01": 6,
@@ -494,7 +494,7 @@
         "2026-07-28": 7,
         "2026-07-29": 5,
         "2026-07-30": 6,
-        "2026-07-31": 1
+        "2026-07-31": 2
       },
       "per_day_kandidaten": {
         "2026-07-29": 1,
@@ -511,8 +511,8 @@
         "2026-07-17": 2,
         "2026-07-02": 1
       },
-      "connect_rate": 59.09090909090909,
-      "avg_dur_min": 1.4375908618899274
+      "connect_rate": 59.2823712948518,
+      "avg_dur_min": 1.4393023255813953
     }
   },
   "days": {
@@ -745,11 +745,11 @@
         "avg_dur_min": 0.5190476190476191
       },
       "Robin": {
-        "outbound": 12,
-        "wirk_calls": 1,
-        "answered_outbound": 8,
-        "duration_sec": 646,
-        "total_calls": 12,
+        "outbound": 15,
+        "wirk_calls": 2,
+        "answered_outbound": 11,
+        "duration_sec": 971,
+        "total_calls": 15,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
         "neue_kunden": 0,
@@ -758,14 +758,14 @@
         "interviews": 0,
         "deals": 0,
         "per_day_calls": {
-          "2026-07-31": 12
+          "2026-07-31": 15
         },
         "per_day_wirk": {
-          "2026-07-31": 1
+          "2026-07-31": 2
         },
         "per_day_kandidaten": {},
-        "connect_rate": 66.66666666666666,
-        "avg_dur_min": 0.8972222222222223
+        "connect_rate": 73.33333333333333,
+        "avg_dur_min": 1.078888888888889
       }
     },
     "2026-07-20": {
