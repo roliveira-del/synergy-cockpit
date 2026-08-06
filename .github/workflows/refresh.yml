@@ -61,6 +61,11 @@ jobs:
             fi
 
             echo "::group::Lauf $(date '+%H:%M:%S')"
+
+            # Streamlit Community Cloud legt Apps ohne Traffic schlafen. Ein
+            # wachgehaltener Container erspart Rico die 30-Sekunden-Weckzeit.
+            curl -s -o /dev/null -m 30 "https://synergy-tracker.streamlit.app/" || true
+
             if python build_cache.py; then
               if git diff --quiet cockpit_data.json; then
                 echo "Keine Aenderung."

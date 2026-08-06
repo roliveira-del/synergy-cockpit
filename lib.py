@@ -125,9 +125,29 @@ def load_pauses():
     except Exception:
         return {}
 
+# Immer die Datei aus dem Repo-Head, nicht aus dem Container-Checkout.
+CACHE_RAW_URL = "https://raw.githubusercontent.com/roliveira-del/synergy-cockpit/main/cockpit_data.json"
+
 @st.cache_data(ttl=120)
 def load_cockpit_cache():
-    """Laedt vorberechnete Aggregate aus cockpit_data.json. Gibt None zurueck wenn nicht da."""
+    """Laedt vorberechnete Aggregate aus cockpit_data.json. Gibt None zurueck wenn nicht da.
+
+    Streamlit Cloud zieht neue Commits nur beim Redeploy. Schlaeft die App ein,
+    bleibt der Checkout im Container auf dem Stand von vorgestern stehen und das
+    Cockpit zeigt Nullen, obwohl der GitHub-Action-Refresh sauber laeuft. Deshalb
+    holen wir die Datei direkt von raw.githubusercontent.com (Repo ist public)
+    und nutzen den lokalen Checkout nur noch als Notfall-Fallback.
+    """
+    try:
+        # Cache-Buster, sonst liefert das raw-CDN bis zu 5 Minuten alte Staende.
+        req = urllib.request.Request(
+            f"{CACHE_RAW_URL}?t={int(time.time())}",
+            headers={"Cache-Control": "no-cache", "User-Agent": "synergy-cockpit"},
+        )
+        with urllib.request.urlopen(req, timeout=10) as r:
+            return json.loads(r.read().decode("utf-8"))
+    except Exception:
+        pass
     p = Path(__file__).parent / "cockpit_data.json"
     if not p.exists():
         return None
