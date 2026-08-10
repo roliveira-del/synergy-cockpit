@@ -128,6 +128,15 @@ def load_pauses():
 # Immer die Datei aus dem Repo-Head, nicht aus dem Container-Checkout.
 CACHE_RAW_URL = "https://raw.githubusercontent.com/roliveira-del/synergy-cockpit/main/cockpit_data.json"
 
+# Der Refresh-Job pullt alle rund 12,5 Min. Ab 45 Min ist etwas kaputt und nicht
+# nur langsam; derselbe Schwellwert gilt im Waechter-Workflow.
+STALE_WARN_MIN = 45
+
+def in_arbeitszeit(jetzt=None):
+    """Mo-Fr 7 bis 20 Uhr, das Fenster in dem der Refresh-Job ueberhaupt laeuft."""
+    jetzt = jetzt or now_local()
+    return jetzt.weekday() < 5 and 7 <= jetzt.hour < 20
+
 @st.cache_data(ttl=120)
 def load_cockpit_cache():
     """Laedt vorberechnete Aggregate aus cockpit_data.json. Gibt None zurueck wenn nicht da.
@@ -912,6 +921,16 @@ def render_sidebar():
                 try:
                     gen_dt = dt.datetime.strptime(gen[:19], "%Y-%m-%dT%H:%M:%S")
                     st.caption(f"⏱️ Daten-Stand: {gen_dt.strftime('%d.%m. %H:%M')} · Auto-Refresh alle 15 Min")
+                    # Unabhaengiger Alarm: haengt an keinem Scheduler, sondern
+                    # nur am Blick aufs Cockpit. Sonst sehen die Zahlen bei einem
+                    # stehengebliebenen Refresh-Job weiter plausibel aus.
+                    alter_min = (now_local() - gen_dt).total_seconds() / 60
+                    if alter_min > STALE_WARN_MIN and in_arbeitszeit():
+                        st.error(
+                            f"⚠️ Daten sind {int(alter_min)} Min alt, der Refresh-Job "
+                            "liefert nicht. Zahlen unten sind veraltet.",
+                            icon="⚠️",
+                        )
                 except Exception:
                     st.caption("Auto-Refresh alle 15 Min")
             else:

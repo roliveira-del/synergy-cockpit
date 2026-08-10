@@ -1,0 +1,90 @@
+name: Cockpit-Waechter
+
+# Prueft, ob cockpit_data.json noch frisch ist. Deckt den Fall ab, den der
+# Refresh-Job selbst nicht melden kann: er laeuft scheinbar, liefert aber nichts
+# mehr (abgelaufenes Token, haengender Lauf, gedrosselter Cron). Ohne diesen
+# Waechter sehen die Zahlen im Cockpit weiter plausibel aus, nur eben von
+# gestern, und es faellt erst auf wenn jemand hinschaut.
+#
+# Ablauf: zu alt -> Refresh anstossen und nachschauen. Hilft das nicht, faellt
+# der Job absichtlich um. Die Fehlschlag-Mail von GitHub ist der Alarmkanal, der
+# nachweislich funktioniert.
+
+on:
+  schedule:
+    # Zur halben Stunde, versetzt zum Refresh-Anker (Minute 4).
+    - cron: "34 5-18 * * 1-5"
+  workflow_dispatch:
+
+concurrency:
+  group: cockpit-waechter
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write # zum Nachtriggern von refresh.yml
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: Europe/Berlin
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Muss zu STALE_WARN_MIN in lib.py passen.
+      MAX_ALTER_MIN: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Frische pruefen, notfalls heilen
+        run: |
+          set -uo pipefail
+
+          # Liest generated_at direkt aus dem Repo-Head, genau wie die App.
+          alter_minuten() {
+            curl -sf -m 30 -H "Cache-Control: no-cache" \
+              "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/cockpit_data.json?t=$(date +%s)" \
+            | python3 -c '
+import json, sys, datetime as dt
+from zoneinfo import ZoneInfo
+gen = json.load(sys.stdin)["generated_at"][:19]
+gen = dt.datetime.strptime(gen, "%Y-%m-%dT%H:%M:%S")
+jetzt = dt.datetime.now(ZoneInfo("Europe/Berlin")).replace(tzinfo=None)
+print(int((jetzt - gen).total_seconds() // 60))
+'
+          }
+
+          STUNDE=$((10#$(date +%H)))
+          if [ "$(date +%u)" -gt 5 ] || [ "$STUNDE" -lt 7 ] || [ "$STUNDE" -ge 20 ]; then
+            echo "Ausserhalb Mo-Fr 7-20 Uhr, der Refresh-Job laeuft hier ohnehin nicht."
+            exit 0
+          fi
+
+          ALTER=$(alter_minuten)
+          if [ -z "$ALTER" ]; then
+            echo "::error::cockpit_data.json ist nicht abrufbar. Steht das Repo noch auf public?"
+            exit 1
+          fi
+
+          echo "Daten-Alter: ${ALTER} Min (Grenze ${MAX_ALTER_MIN})."
+          if [ "$ALTER" -le "$MAX_ALTER_MIN" ]; then
+            echo "Alles frisch."
+            exit 0
+          fi
+
+          echo "::warning::Daten ${ALTER} Min alt, Refresh wird angestossen."
+          gh workflow run refresh.yml --ref main || \
+            echo "::warning::workflow_dispatch fehlgeschlagen."
+
+          # Ein Lauf braucht rund 2,5 Min; 6 Min Wartezeit ist Puffer genug.
+          sleep 360
+
+          ALTER_NEU=$(alter_minuten)
+          echo "Daten-Alter nach Heilversuch: ${ALTER_NEU:-unbekannt} Min."
+          if [ -n "$ALTER_NEU" ] && [ "$ALTER_NEU" -le "$MAX_ALTER_MIN" ]; then
+            echo "Selbst geheilt, kein Handlungsbedarf."
+            exit 0
+          fi
+
+          echo "::error::Cockpit-Daten sind ${ALTER_NEU:-?} Min alt und der Refresh springt nicht an. Bitte Secrets (Aircall, Recruit CRM) und die letzten Laeufe von refresh.yml pruefen."
+          exit 1
