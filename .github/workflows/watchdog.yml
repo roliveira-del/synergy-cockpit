@@ -41,17 +41,11 @@ jobs:
           set -uo pipefail
 
           # Liest generated_at direkt aus dem Repo-Head, genau wie die App.
+          # Das Skript liegt bewusst als Datei im Repo: als eingebettetes
+          # python3 -c muessten seine Zeilen in der Spalte 0 stehen und wuerden
+          # damit den YAML-Block dieses Steps beenden.
           alter_minuten() {
-            curl -sf -m 30 -H "Cache-Control: no-cache" \
-              "https://raw.githubusercontent.com/${GITHUB_REPOSITORY}/main/cockpit_data.json?t=$(date +%s)" \
-            | python3 -c '
-import json, sys, datetime as dt
-from zoneinfo import ZoneInfo
-gen = json.load(sys.stdin)["generated_at"][:19]
-gen = dt.datetime.strptime(gen, "%Y-%m-%dT%H:%M:%S")
-jetzt = dt.datetime.now(ZoneInfo("Europe/Berlin")).replace(tzinfo=None)
-print(int((jetzt - gen).total_seconds() // 60))
-'
+            python3 tools/data_age.py "$GITHUB_REPOSITORY"
           }
 
           STUNDE=$((10#$(date +%H)))
