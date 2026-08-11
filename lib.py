@@ -81,6 +81,21 @@ AIRCALL_ID = get_secret("AIRCALL_API_ID")
 AIRCALL_TOKEN = get_secret("AIRCALL_API_TOKEN")
 CRM_TOKEN = get_secret("RECRUITCRM_API_TOKEN")
 
+# Auf Streamlit Cloud muessen die drei Werte unter Settings -> Secrets liegen.
+# Fehlen sie, lieferten die Fetches frueher stillschweigend leere Listen, und das
+# Cockpit zeigte "0 Calls" statt zuzugeben dass es gar nicht erst gefragt hat.
+HAT_ZUGANGSDATEN = all([AIRCALL_ID, AIRCALL_TOKEN, CRM_TOKEN])
+
+# Sammelt Fehlschlaege des Live-Pulls, damit die Sidebar sie zeigen kann. Jeder
+# Fetch fing seine Exception ab und brach die Schleife ab: eine tote oder
+# abgelaufene API war von "nichts passiert" nicht zu unterscheiden.
+PULL_FEHLER = []
+
+def merke_fehler(quelle, e):
+    eintrag = f"{quelle}: {type(e).__name__} {e}"
+    if eintrag not in PULL_FEHLER:
+        PULL_FEHLER.append(eintrag)
+
 # ============== HTTP ==============
 
 def aircall_get(url):
@@ -246,7 +261,8 @@ def fetch_aircall(from_ts, to_ts):
         params = urllib.parse.urlencode({"from": from_ts, "to": to_ts, "per_page": 50, "page": page, "order": "asc"})
         try:
             d = aircall_get(f"https://api.aircall.io/v1/calls?{params}")
-        except Exception:
+        except Exception as e:
+            merke_fehler("Aircall", e)
             break
         chunk = d.get("calls", [])
         if not chunk: break
@@ -263,7 +279,8 @@ def fetch_candidates(max_pages=20):
     while page <= max_pages:
         try:
             d = crm_get(f"https://api.recruitcrm.io/v1/candidates?page={page}&per_page=100")
-        except Exception:
+        except Exception as e:
+            merke_fehler("CRM Kandidaten", e)
             break
         chunk = d.get("data", [])
         if not chunk: break
@@ -280,7 +297,8 @@ def fetch_companies(max_pages=10):
     while page <= max_pages:
         try:
             d = crm_get(f"https://api.recruitcrm.io/v1/companies?page={page}&per_page=100")
-        except Exception:
+        except Exception as e:
+            merke_fehler("CRM Companies", e)
             break
         chunk = d.get("data", [])
         if not chunk: break
@@ -297,7 +315,8 @@ def fetch_jobs(max_pages=5):
     while page <= max_pages:
         try:
             d = crm_get(f"https://api.recruitcrm.io/v1/jobs?page={page}&per_page=100")
-        except Exception:
+        except Exception as e:
+            merke_fehler("CRM Jobs", e)
             break
         chunk = d.get("data", [])
         if not chunk: break
@@ -316,7 +335,8 @@ def fetch_assignments(job_slugs):
         while page <= 3:
             try:
                 d = crm_get(f"https://api.recruitcrm.io/v1/jobs/{slug}/assigned-candidates?page={page}&per_page=50")
-            except Exception:
+            except Exception as e:
+                merke_fehler("CRM Assignments", e)
                 break
             chunk = d.get("data", [])
             if not chunk: break
@@ -904,16 +924,36 @@ def render_sidebar():
             today_effective = today
 
         st.markdown("---")
-        if st.button("🔄 Daten jetzt live ziehen", use_container_width=True):
+        # Ohne Zugangsdaten waere ein Live-Pull sinnlos: er liefert leere Listen
+        # und damit ueberall 0. Dann laedt der Button stattdessen den Snapshot
+        # neu, der ohnehin nur rund 12 Min alt ist.
+        btn_label = "🔄 Daten jetzt live ziehen" if HAT_ZUGANGSDATEN else "\N{ANTICLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS} Snapshot neu laden"
+        if st.button(btn_label, use_container_width=True):
             # Cache leeren -> load_all_data pullt frisch. force_live -> Snapshot
             # wird umgangen. Kein rerun noetig: render_sidebar laeuft vor den
             # Karten, die das Flag im selben Lauf lesen.
             st.cache_data.clear()
-            st.session_state["force_live"] = True
+            st.session_state["force_live"] = HAT_ZUGANGSDATEN
+            PULL_FEHLER.clear()
+
+        if not HAT_ZUGANGSDATEN:
+            st.warning(
+                "Live-Pull nicht moeglich: in Streamlit Cloud fehlen die Secrets "
+                "(AIRCALL_API_ID, AIRCALL_API_TOKEN, RECRUITCRM_API_TOKEN). "
+                "Angezeigt wird der Snapshot des Refresh-Jobs.",
+                icon="\N{KEY}",
+            )
 
         # Daten-Stand sichtbar machen, damit klar ist wie frisch die Zahlen sind.
         if st.session_state.get("force_live"):
-            st.caption("⏱️ Stand: gerade live aus Aircall + CRM gezogen")
+            if PULL_FEHLER:
+                st.error(
+                    "Live-Pull unvollstaendig, die Zahlen sind zu niedrig:\n\n"
+                    + "\n".join(f"- {f}" for f in PULL_FEHLER),
+                    icon="\N{POLICE CARS REVOLVING LIGHT}",
+                )
+            else:
+                st.caption("⏱️ Stand: gerade live aus Aircall + CRM gezogen")
         else:
             cache = load_cockpit_cache()
             gen = (cache or {}).get("generated_at", "")
