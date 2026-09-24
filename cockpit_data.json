@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-24T13:17:58",
+  "generated_at": "2026-09-24T13:29:54",
   "weeks": {
     "2026-KW39": {
       "start": "2026-09-21T00:00:00",
@@ -39,9 +39,9 @@
       },
       "Robin": {
         "outbound": 1,
-        "wirk_calls": 0,
+        "wirk_calls": 1,
         "answered_outbound": 1,
-        "duration_sec": 34,
+        "duration_sec": 1496,
         "total_calls": 2,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -53,10 +53,12 @@
         "per_day_calls": {
           "2026-09-24": 2
         },
-        "per_day_wirk": {},
+        "per_day_wirk": {
+          "2026-09-24": 1
+        },
         "per_day_kandidaten": {},
         "connect_rate": 100.0,
-        "avg_dur_min": 0.2833333333333333
+        "avg_dur_min": 12.466666666666667
       }
     },
     "2026-KW38": {
@@ -364,9 +366,9 @@
     },
     "Robin": {
       "outbound": 303,
-      "wirk_calls": 50,
+      "wirk_calls": 51,
       "answered_outbound": 175,
-      "duration_sec": 45408,
+      "duration_sec": 46870,
       "total_calls": 308,
       "neue_kandidaten": 0,
       "neue_jobs": 4,
@@ -400,11 +402,12 @@
         "2026-09-15": 5,
         "2026-09-16": 5,
         "2026-09-17": 6,
-        "2026-09-18": 1
+        "2026-09-18": 1,
+        "2026-09-24": 1
       },
       "per_day_kandidaten": {},
       "connect_rate": 57.755775577557756,
-      "avg_dur_min": 2.457142857142857
+      "avg_dur_min": 2.536255411255411
     }
   },
   "days": {
@@ -572,9 +575,9 @@
       },
       "Robin": {
         "outbound": 1,
-        "wirk_calls": 0,
+        "wirk_calls": 1,
         "answered_outbound": 1,
-        "duration_sec": 34,
+        "duration_sec": 1496,
         "total_calls": 2,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -586,10 +589,12 @@
         "per_day_calls": {
           "2026-09-24": 2
         },
-        "per_day_wirk": {},
+        "per_day_wirk": {
+          "2026-09-24": 1
+        },
         "per_day_kandidaten": {},
         "connect_rate": 100.0,
-        "avg_dur_min": 0.2833333333333333
+        "avg_dur_min": 12.466666666666667
       }
     },
     "2026-09-14": {
