@@ -37,6 +37,9 @@ CRM_TOKEN = ENV['RECRUITCRM_API_TOKEN']
 USERS = {
     "Kevin": {"aircall_id": 1301014, "crm_id": 99698},
     "Robin": {"aircall_id": 1561108, "crm_id": 100690},
+    "Fabian": {"aircall_id": 2091137, "crm_id": 158499},
+    "Paul": {"aircall_id": 2091922, "crm_id": 158524},
+    "Alex": {"aircall_id": 2091923, "crm_id": 158525},
 }
 ASSIGNMENT_STATUS = {1, 613655, 613656, 613657, 613658, 613659, 613660, 613661, 613662, 8}
 INTERVIEW_STATUS = {613655, 613656, 613657}
@@ -243,8 +246,7 @@ for offset in range(0, 5):
     out_data["weeks"][key] = {
         "start": week_start.isoformat(),
         "end": week_end.isoformat(),
-        "Kevin": aggregate_for_period("Kevin", week_start, week_end),
-        "Robin": aggregate_for_period("Robin", week_start, week_end),
+        **{p: aggregate_for_period(p, week_start, week_end) for p in USERS},
     }
 # Tagesaggregate fuer alle Tage der vorberechneten Wochen (Tages-To-Dos + Wochenansicht)
 out_data["days"] = {}
@@ -257,8 +259,7 @@ for key, w in out_data["weeks"].items():
         day_end = day_start.replace(hour=23, minute=59, second=59)
         dkey = day_start.strftime("%Y-%m-%d")
         out_data["days"][dkey] = {
-            "Kevin": aggregate_for_period("Kevin", day_start, day_end),
-            "Robin": aggregate_for_period("Robin", day_start, day_end),
+            p: aggregate_for_period(p, day_start, day_end) for p in USERS
         }
 
 # Monatsdaten (current)
@@ -268,8 +269,7 @@ month_end = (next_month - dt.timedelta(days=next_month.day)).replace(hour=23, mi
 out_data["month"] = {
     "start": month_start.isoformat(),
     "end": month_end.isoformat(),
-    "Kevin": aggregate_for_period("Kevin", month_start, month_end),
-    "Robin": aggregate_for_period("Robin", month_start, month_end),
+    **{p: aggregate_for_period(p, month_start, month_end) for p in USERS},
 }
 
 # Save

@@ -25,14 +25,14 @@ st.caption(f"Woche {week_start.strftime('%d.%m.')} bis {week_end.strftime('%d.%m
 st.markdown(
     """<div class="sbc-card" style="padding: 14px 18px; margin: 14px 0 22px; box-shadow: none;
     background: linear-gradient(90deg, #eff6ff, #ecfdf5); border-color: #dbe7f7; font-size: 13.5px; color: #334155;">
-    ⬅️  In der Seitenleiste <b>Kevin</b> oder <b>Robin</b> wählen für die persönliche Seite.</div>""",
+    ⬅️  In der Seitenleiste einen Berater wählen für die persönliche Seite.</div>""",
     unsafe_allow_html=True,
 )
 
 data = None  # lazy load - nur wenn Cache fehlt
 
-# Zwei Spalten nebeneinander
-col_kev, col_rob = st.columns(2)
+# Karten in Reihen zu je drei
+PERSONEN = list(USERS)
 
 def render_compact_card(col, person):
     global data
@@ -132,8 +132,11 @@ def render_compact_card(col, person):
     html_clean = " ".join(line.strip() for line in html.split("\n") if line.strip())
     col.markdown(html_clean, unsafe_allow_html=True)
 
-render_compact_card(col_kev, "Kevin")
-render_compact_card(col_rob, "Robin")
+for i in range(0, len(PERSONEN), 3):
+    reihe = PERSONEN[i:i + 3]
+    cols = st.columns(3)
+    for col, person in zip(cols, reihe):
+        render_compact_card(col, person)
 
 st.markdown("---")
 st.caption("Synergy Cockpit · Daten: Aircall + Recruit CRM · Auto-Refresh alle 15 Min")
