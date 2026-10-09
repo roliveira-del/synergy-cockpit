@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-09T18:27:26",
+  "generated_at": "2026-10-09T18:39:02",
   "weeks": {
     "2026-KW41": {
       "start": "2026-10-05T00:00:00",
@@ -89,9 +89,9 @@
       },
       "Paul": {
         "outbound": 2,
-        "wirk_calls": 0,
+        "wirk_calls": 1,
         "answered_outbound": 2,
-        "duration_sec": 44,
+        "duration_sec": 460,
         "total_calls": 3,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -103,10 +103,12 @@
         "per_day_calls": {
           "2026-10-09": 3
         },
-        "per_day_wirk": {},
+        "per_day_wirk": {
+          "2026-10-09": 1
+        },
         "per_day_kandidaten": {},
         "connect_rate": 100.0,
-        "avg_dur_min": 0.24444444444444444
+        "avg_dur_min": 2.555555555555556
       },
       "Alex": {
         "outbound": 1,
@@ -712,9 +714,9 @@
     },
     "Paul": {
       "outbound": 2,
-      "wirk_calls": 0,
+      "wirk_calls": 1,
       "answered_outbound": 2,
-      "duration_sec": 44,
+      "duration_sec": 460,
       "total_calls": 3,
       "neue_kandidaten": 0,
       "neue_jobs": 0,
@@ -726,10 +728,12 @@
       "per_day_calls": {
         "2026-10-09": 3
       },
-      "per_day_wirk": {},
+      "per_day_wirk": {
+        "2026-10-09": 1
+      },
       "per_day_kandidaten": {},
       "connect_rate": 100.0,
-      "avg_dur_min": 0.24444444444444444
+      "avg_dur_min": 2.555555555555556
     },
     "Alex": {
       "outbound": 1,
@@ -1242,9 +1246,9 @@
       },
       "Paul": {
         "outbound": 2,
-        "wirk_calls": 0,
+        "wirk_calls": 1,
         "answered_outbound": 2,
-        "duration_sec": 44,
+        "duration_sec": 460,
         "total_calls": 3,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -1256,10 +1260,12 @@
         "per_day_calls": {
           "2026-10-09": 3
         },
-        "per_day_wirk": {},
+        "per_day_wirk": {
+          "2026-10-09": 1
+        },
         "per_day_kandidaten": {},
         "connect_rate": 100.0,
-        "avg_dur_min": 0.24444444444444444
+        "avg_dur_min": 2.555555555555556
       },
       "Alex": {
         "outbound": 1,
