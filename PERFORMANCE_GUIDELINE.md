@@ -161,7 +161,7 @@ Akquise und Delivery sind je nach aktuellem Bedarf zu balancieren. Aktuelle Prio
 | **Neue Jobs angelegt** | **10** | 2 |
 | Neue Companies (BD-Touch) | **1-2** | – |
 | Kandidaten ins CRM (mit Quali-Note) | **18** | 2-4 |
-| Kandidaten auf Jobs gepflegt (Assignments) | **8** | 1-2 |
+| Kandidaten auf Jobs gepflegt (Assignments) | **12** | 3 |
 | Sendouts (Stage „Assigned"+) | **6** | – |
 | Interviews scheduled | **4** | – |
 

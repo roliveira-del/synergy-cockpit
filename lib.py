@@ -38,7 +38,7 @@ USERS = {
 TARGETS = {
     "weekly": {
         "outbound": 300, "wirk_calls": 25, "neue_kandidaten": 18,
-        "assignments": 8, "sendouts": 6, "interviews": 4, "neue_jobs": 10,
+        "assignments": 12, "sendouts": 6, "interviews": 4, "neue_jobs": 10,
     },
     "monthly": {
         "deals": 2, "interviews": 16, "sendouts": 24,
@@ -47,7 +47,7 @@ TARGETS = {
     # Wochenziel / 5 Arbeitstage, krumme Werte aufgerundet
     "daily": {
         "outbound": 60, "wirk_calls": 5, "neue_kandidaten": 4,
-        "assignments": 2, "sendouts": 1, "neue_jobs": 2,
+        "assignments": 3, "sendouts": 1, "neue_jobs": 2,
     },
 }
 
