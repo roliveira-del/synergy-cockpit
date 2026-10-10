@@ -37,17 +37,17 @@ USERS = {
 
 TARGETS = {
     "weekly": {
-        "outbound": 225, "wirk_calls": 25, "neue_kandidaten": 18,
-        "assignments": 8, "sendouts": 6, "interviews": 4, "neue_jobs": 5,
+        "outbound": 300, "wirk_calls": 25, "neue_kandidaten": 18,
+        "assignments": 8, "sendouts": 6, "interviews": 4, "neue_jobs": 10,
     },
     "monthly": {
         "deals": 2, "interviews": 16, "sendouts": 24,
-        "neue_jobs": 20, "neue_kunden": 4,
+        "neue_jobs": 40, "neue_kunden": 4,
     },
     # Wochenziel / 5 Arbeitstage, krumme Werte aufgerundet
     "daily": {
-        "outbound": 45, "wirk_calls": 5, "neue_kandidaten": 4,
-        "assignments": 2, "sendouts": 1, "neue_jobs": 1,
+        "outbound": 60, "wirk_calls": 5, "neue_kandidaten": 4,
+        "assignments": 2, "sendouts": 1, "neue_jobs": 2,
     },
 }
 
