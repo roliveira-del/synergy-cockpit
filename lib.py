@@ -878,9 +878,6 @@ def render_person_page(person, today=None):
     week_days = get_week_days(person, week_start, today)
     st.markdown(render_week_view(person, week_days, week_start, today, week), unsafe_allow_html=True)
 
-    # Monats-Hero
-    st.markdown(deals_hero(person, month["deals"], TARGETS["monthly"]["deals"], days_left), unsafe_allow_html=True)
-
     # Gespraechsqualitaet
     st.markdown("## Gesprächsqualität")
     qcol1, qcol2, qcol3 = st.columns(3)

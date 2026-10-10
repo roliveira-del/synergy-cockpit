@@ -86,11 +86,6 @@ def render_compact_card(col, person):
         </div>
         """
 
-    deals = month["deals"]
-    deal_pct = (deals / TARGETS["monthly"]["deals"]) * 100
-    deal_color, deal_color_2 = status_color_pair(deal_pct / 100)
-    deal_status = status_label(deal_pct / 100)
-
     rows = [
         ("📞", "Cold Calls", week["outbound"], TARGETS["weekly"]["outbound"]),
         ("☎️", "Wirk-Calls", week["wirk_calls"], TARGETS["weekly"]["wirk_calls"]),
@@ -99,6 +94,12 @@ def render_compact_card(col, person):
         ("📤", "Sendouts", week["sendouts"], TARGETS["weekly"]["sendouts"]),
         ("📋", "Neue Jobs", week["neue_jobs"], TARGETS["weekly"]["neue_jobs"]),
     ]
+
+    # Status-Pill: mittlere Wochen-Zielerreichung ueber alle Kennzahlen
+    week_quoten = [min(val / target, 1.0) for _, _, val, target in rows if target]
+    week_pct = sum(week_quoten) / len(week_quoten) if week_quoten else 0
+    status_c, status_c2 = status_color_pair(week_pct)
+    status_txt = status_label(week_pct)
 
     rows_html = ""
     for icon, label, val, target in rows:
@@ -113,18 +114,13 @@ def render_compact_card(col, person):
         """
 
     html = f"""
-    <div class="sbc-card sbc-person" style="--c: {accent}; --c2: {deal_color_2};">
+    <div class="sbc-card sbc-person" style="--c: {accent}; --c2: {status_c2};">
         <div class="sbc-row" style="margin-bottom: 16px;">
             <div class="sbc-person-name">{person}</div>
-            <div class="sbc-pill-solid" style="--c: {deal_color};">{deal_status}</div>
+            <div class="sbc-pill-solid" style="--c: {status_c};">{status_txt}</div>
         </div>
         {today_html}
-        <div class="sbc-mini" style="--c: {deal_color}; --c2: {deal_color_2};">
-            <div class="sbc-mini-cap"><span class="sbc-ico-sm">🎯</span>DEALS MONAT</div>
-            <div class="sbc-mini-num">{deals}<span> / {TARGETS['monthly']['deals']}</span></div>
-            <div class="sbc-hero-track" style="height: 8px; margin-top: 11px;"><div class="sbc-fill" style="width: {min(deal_pct, 100)}%;"></div></div>
-        </div>
-        <div class="sbc-todo-head" style="margin-bottom: 6px;">DIESE WOCHE</div>
+        <div class="sbc-todo-head" style="margin: 14px 0 6px;">DIESE WOCHE</div>
         {rows_html}
     </div>
     """
