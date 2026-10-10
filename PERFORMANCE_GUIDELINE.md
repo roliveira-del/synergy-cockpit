@@ -156,9 +156,9 @@ Akquise und Delivery sind je nach aktuellem Bedarf zu balancieren. Aktuelle Prio
 
 | KPI | Wochenziel | Daily-Mindest |
 |---|---|---|
-| Cold Calls (Aircall Outbound) | **225** | **45** |
+| Cold Calls (Aircall Outbound) | **300** | **60** |
 | Wirk-Calls (≥2 Min) | **25** | 3-5 |
-| **Neue Jobs angelegt** | **3-5** | 1 |
+| **Neue Jobs angelegt** | **10** | 2 |
 | Neue Companies (BD-Touch) | **1-2** | – |
 | Kandidaten ins CRM (mit Quali-Note) | **18** | 2-4 |
 | Kandidaten auf Jobs gepflegt (Assignments) | **8** | 1-2 |
@@ -172,7 +172,7 @@ Akquise und Delivery sind je nach aktuellem Bedarf zu balancieren. Aktuelle Prio
 | **Deals (Top-Goal)** | **2** |
 | Interviews | 16 |
 | Sendouts | 24 |
-| Neue Jobs angelegt | 20 |
+| Neue Jobs angelegt | 40 |
 | Neue Kunden | 4 |
 | Wirk-Calls | 100 |
 
