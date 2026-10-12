@@ -1,17 +1,17 @@
 {
-  "generated_at": "2026-10-12T16:39:11",
+  "generated_at": "2026-10-12T16:50:37",
   "weeks": {
     "2026-KW42": {
       "start": "2026-10-12T00:00:00",
       "end": "2026-10-18T23:59:59",
       "Kevin": {
         "outbound": 47,
-        "wirk_calls": 10,
+        "wirk_calls": 11,
         "answered_outbound": 35,
-        "duration_sec": 6194,
+        "duration_sec": 6723,
         "total_calls": 49,
         "neue_kandidaten": 1,
-        "neue_jobs": 0,
+        "neue_jobs": 1,
         "neue_kunden": 25,
         "assignments": 0,
         "sendouts": 0,
@@ -21,13 +21,13 @@
           "2026-10-12": 49
         },
         "per_day_wirk": {
-          "2026-10-12": 10
+          "2026-10-12": 11
         },
         "per_day_kandidaten": {
           "2026-10-12": 1
         },
         "connect_rate": 74.46808510638297,
-        "avg_dur_min": 2.1068027210884357
+        "avg_dur_min": 2.286734693877551
       },
       "Robin": {
         "outbound": 31,
@@ -59,7 +59,7 @@
         "duration_sec": 1963,
         "total_calls": 25,
         "neue_kandidaten": 0,
-        "neue_jobs": 0,
+        "neue_jobs": 1,
         "neue_kunden": 0,
         "assignments": 0,
         "sendouts": 0,
@@ -408,8 +408,8 @@
         "neue_kandidaten": 0,
         "neue_jobs": 0,
         "neue_kunden": 0,
-        "assignments": 3,
-        "sendouts": 3,
+        "assignments": 1,
+        "sendouts": 1,
         "interviews": 0,
         "deals": 0,
         "per_day_calls": {
@@ -614,12 +614,12 @@
     "end": "2026-10-31T23:59:59",
     "Kevin": {
       "outbound": 280,
-      "wirk_calls": 40,
+      "wirk_calls": 41,
       "answered_outbound": 198,
-      "duration_sec": 18320,
+      "duration_sec": 18849,
       "total_calls": 288,
       "neue_kandidaten": 22,
-      "neue_jobs": 8,
+      "neue_jobs": 9,
       "neue_kunden": 146,
       "assignments": 2,
       "sendouts": 2,
@@ -637,7 +637,7 @@
         "2026-10-07": 12,
         "2026-10-08": 10,
         "2026-10-09": 3,
-        "2026-10-12": 10
+        "2026-10-12": 11
       },
       "per_day_kandidaten": {
         "2026-10-12": 1,
@@ -647,7 +647,7 @@
         "2026-10-06": 5
       },
       "connect_rate": 70.71428571428572,
-      "avg_dur_min": 1.0601851851851853
+      "avg_dur_min": 1.0907986111111112
     },
     "Robin": {
       "outbound": 252,
@@ -694,7 +694,7 @@
       "duration_sec": 1977,
       "total_calls": 26,
       "neue_kandidaten": 0,
-      "neue_jobs": 0,
+      "neue_jobs": 1,
       "neue_kunden": 0,
       "assignments": 0,
       "sendouts": 0,
@@ -761,12 +761,12 @@
     "2026-10-12": {
       "Kevin": {
         "outbound": 47,
-        "wirk_calls": 10,
+        "wirk_calls": 11,
         "answered_outbound": 35,
-        "duration_sec": 6194,
+        "duration_sec": 6723,
         "total_calls": 49,
         "neue_kandidaten": 1,
-        "neue_jobs": 0,
+        "neue_jobs": 1,
         "neue_kunden": 25,
         "assignments": 0,
         "sendouts": 0,
@@ -776,13 +776,13 @@
           "2026-10-12": 49
         },
         "per_day_wirk": {
-          "2026-10-12": 10
+          "2026-10-12": 11
         },
         "per_day_kandidaten": {
           "2026-10-12": 1
         },
         "connect_rate": 74.46808510638297,
-        "avg_dur_min": 2.1068027210884357
+        "avg_dur_min": 2.286734693877551
       },
       "Robin": {
         "outbound": 31,
@@ -814,7 +814,7 @@
         "duration_sec": 1963,
         "total_calls": 25,
         "neue_kandidaten": 0,
-        "neue_jobs": 0,
+        "neue_jobs": 1,
         "neue_kunden": 0,
         "assignments": 0,
         "sendouts": 0,
@@ -2328,8 +2328,8 @@
         "neue_kandidaten": 0,
         "neue_jobs": 0,
         "neue_kunden": 0,
-        "assignments": 3,
-        "sendouts": 3,
+        "assignments": 1,
+        "sendouts": 1,
         "interviews": 0,
         "deals": 0,
         "per_day_calls": {},
