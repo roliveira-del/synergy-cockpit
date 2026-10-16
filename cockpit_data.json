@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-16T11:28:59",
+  "generated_at": "2026-10-16T11:40:36",
   "weeks": {
     "2026-KW42": {
       "start": "2026-10-12T00:00:00",
@@ -74,9 +74,9 @@
       },
       "Fabian": {
         "outbound": 111,
-        "wirk_calls": 24,
+        "wirk_calls": 25,
         "answered_outbound": 80,
-        "duration_sec": 9108,
+        "duration_sec": 9775,
         "total_calls": 118,
         "neue_kandidaten": 0,
         "neue_jobs": 5,
@@ -97,11 +97,11 @@
           "2026-10-13": 2,
           "2026-10-14": 10,
           "2026-10-15": 6,
-          "2026-10-16": 1
+          "2026-10-16": 2
         },
         "per_day_kandidaten": {},
         "connect_rate": 72.07207207207207,
-        "avg_dur_min": 1.2864406779661017
+        "avg_dur_min": 1.3806497175141244
       },
       "Paul": {
         "outbound": 78,
@@ -744,9 +744,9 @@
     },
     "Fabian": {
       "outbound": 111,
-      "wirk_calls": 24,
+      "wirk_calls": 25,
       "answered_outbound": 80,
-      "duration_sec": 9122,
+      "duration_sec": 9789,
       "total_calls": 119,
       "neue_kandidaten": 0,
       "neue_jobs": 5,
@@ -768,11 +768,11 @@
         "2026-10-13": 2,
         "2026-10-14": 10,
         "2026-10-15": 6,
-        "2026-10-16": 1
+        "2026-10-16": 2
       },
       "per_day_kandidaten": {},
       "connect_rate": 72.07207207207207,
-      "avg_dur_min": 1.277591036414566
+      "avg_dur_min": 1.3710084033613446
     },
     "Paul": {
       "outbound": 80,
@@ -1336,9 +1336,9 @@
       },
       "Fabian": {
         "outbound": 6,
-        "wirk_calls": 1,
+        "wirk_calls": 2,
         "answered_outbound": 3,
-        "duration_sec": 471,
+        "duration_sec": 1138,
         "total_calls": 7,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -1351,11 +1351,11 @@
           "2026-10-16": 7
         },
         "per_day_wirk": {
-          "2026-10-16": 1
+          "2026-10-16": 2
         },
         "per_day_kandidaten": {},
         "connect_rate": 50.0,
-        "avg_dur_min": 1.1214285714285714
+        "avg_dur_min": 2.7095238095238097
       },
       "Paul": {
         "outbound": 0,
