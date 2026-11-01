@@ -16,6 +16,14 @@ on:
     - cron: "4 5-18 * * 1-5"
   workflow_dispatch:
 
+# Seit 01.11.2026 haelt sich die Kette selbst am Leben: jeder Lauf startet
+# am Ende per workflow_dispatch seinen Nachfolger. workflow_dispatch wird von
+# GitHub sofort ausgefuehrt, nur "schedule" wird gedrosselt (am 30.10.2026
+# kam der erste Anker erst um 12:10 Uhr, am Nachmittag riss die Kette fuer
+# Stunden ab). Der Cron bleibt nur als Notstart, falls ein Lauf hart stirbt.
+# Ausserhalb Mo-Fr 7-20 Uhr schlaeft der Lauf, statt sich zu beenden, damit
+# die Kette morgens um 7 ohne Anker weiterlaeuft.
+
 # Immer nur eine Kette. Ein neuer Anker loest den laufenden Job ab, damit die
 # Kette sich stuendlich selbst heilt und nie haengen bleibt. Abgeloeste Laeufe
 # erscheinen in der Historie als "cancelled", das ist der Normalfall und kein
@@ -26,16 +34,18 @@ concurrency:
 
 permissions:
   contents: write
+  actions: write # fuer den Selbststart des Nachfolgers
 
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 190
+    timeout-minutes: 355
     env:
       TZ: Europe/Berlin
       AIRCALL_API_ID: ${{ secrets.AIRCALL_API_ID }}
       AIRCALL_API_TOKEN: ${{ secrets.AIRCALL_API_TOKEN }}
       RECRUITCRM_API_TOKEN: ${{ secrets.RECRUITCRM_API_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -54,14 +64,20 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           INTERVALL=600
-          # Nach 3 Stunden aussteigen; der naechste stuendliche Anker uebernimmt.
-          SCHLUSS=$(( $(date +%s) + 3*3600 ))
+          # Nach knapp 6 Stunden (GitHub-Limit) aussteigen; der Nachfolger
+          # wird im Schritt danach selbst gestartet.
+          SCHLUSS=$(( $(date +%s) + 5*3600 + 40*60 ))
 
           while :; do
             TAG=$(date +%u); STUNDE=$(date +%H)
             if [ "$TAG" -gt 5 ] || [ "$((10#$STUNDE))" -lt 7 ] || [ "$((10#$STUNDE))" -ge 20 ]; then
-              echo "Ausserhalb des Zeitfensters (Mo-Fr 7-20 Uhr). Job beendet."
-              break
+              echo "Ausserhalb des Zeitfensters (Mo-Fr 7-20 Uhr), schlafe $((INTERVALL/60)) Min."
+              if [ $(( $(date +%s) + INTERVALL )) -gt "$SCHLUSS" ]; then
+                echo "Maximale Joblaufzeit erreicht, Nachfolger uebernimmt."
+                break
+              fi
+              sleep "$INTERVALL"
+              continue
             fi
 
             echo "::group::Lauf $(date '+%H:%M:%S')"
@@ -106,8 +122,23 @@ jobs:
             echo "::endgroup::"
 
             if [ $(( $(date +%s) + INTERVALL )) -gt "$SCHLUSS" ]; then
-              echo "Maximale Joblaufzeit erreicht, der naechste Anker uebernimmt."
+              echo "Maximale Joblaufzeit erreicht, Nachfolger uebernimmt."
               break
             fi
             sleep "$INTERVALL"
           done
+
+      - name: Nachfolger starten
+        # Auch nach einem Fehler, nur nicht wenn ein neuer Anker diesen Lauf
+        # abgeloest hat (der startet seinen Nachfolger dann selbst).
+        if: ${{ !cancelled() }}
+        run: |
+          for VERSUCH in 1 2 3; do
+            if gh workflow run refresh.yml --ref main; then
+              echo "Nachfolger gestartet."
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "::error::Nachfolger konnte nicht gestartet werden, Kette haengt am Cron-Notstart."
+          exit 1
