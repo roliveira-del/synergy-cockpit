@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-11T12:11:48",
+  "generated_at": "2026-11-11T12:24:25",
   "weeks": {
     "2026-KW46": {
       "start": "2026-11-09T00:00:00",
@@ -37,9 +37,9 @@
       },
       "Robin": {
         "outbound": 69,
-        "wirk_calls": 6,
+        "wirk_calls": 7,
         "answered_outbound": 41,
-        "duration_sec": 6522,
+        "duration_sec": 6931,
         "total_calls": 71,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -54,11 +54,11 @@
         },
         "per_day_wirk": {
           "2026-11-10": 5,
-          "2026-11-11": 1
+          "2026-11-11": 2
         },
         "per_day_kandidaten": {},
         "connect_rate": 59.42028985507246,
-        "avg_dur_min": 1.530985915492958
+        "avg_dur_min": 1.6269953051643191
       },
       "Fabian": {
         "outbound": 109,
@@ -719,9 +719,9 @@
     },
     "Robin": {
       "outbound": 270,
-      "wirk_calls": 43,
+      "wirk_calls": 44,
       "answered_outbound": 157,
-      "duration_sec": 30355,
+      "duration_sec": 30764,
       "total_calls": 275,
       "neue_kandidaten": 3,
       "neue_jobs": 2,
@@ -746,7 +746,7 @@
         "2026-11-05": 15,
         "2026-11-06": 2,
         "2026-11-10": 5,
-        "2026-11-11": 1
+        "2026-11-11": 2
       },
       "per_day_kandidaten": {
         "2026-11-03": 1,
@@ -754,7 +754,7 @@
         "2026-11-02": 1
       },
       "connect_rate": 58.14814814814815,
-      "avg_dur_min": 1.8396969696969696
+      "avg_dur_min": 1.8644848484848486
     },
     "Fabian": {
       "outbound": 308,
@@ -1065,9 +1065,9 @@
       },
       "Robin": {
         "outbound": 16,
-        "wirk_calls": 1,
+        "wirk_calls": 2,
         "answered_outbound": 9,
-        "duration_sec": 653,
+        "duration_sec": 1062,
         "total_calls": 17,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -1080,11 +1080,11 @@
           "2026-11-11": 17
         },
         "per_day_wirk": {
-          "2026-11-11": 1
+          "2026-11-11": 2
         },
         "per_day_kandidaten": {},
         "connect_rate": 56.25,
-        "avg_dur_min": 0.6401960784313726
+        "avg_dur_min": 1.0411764705882354
       },
       "Fabian": {
         "outbound": 13,
