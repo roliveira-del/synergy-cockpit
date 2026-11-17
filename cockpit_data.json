@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-17T17:20:32",
+  "generated_at": "2026-11-17T17:32:44",
   "weeks": {
     "2026-KW47": {
       "start": "2026-11-16T00:00:00",
@@ -80,9 +80,9 @@
       },
       "Paul": {
         "outbound": 82,
-        "wirk_calls": 28,
+        "wirk_calls": 29,
         "answered_outbound": 77,
-        "duration_sec": 13212,
+        "duration_sec": 14239,
         "total_calls": 84,
         "neue_kandidaten": 0,
         "neue_jobs": 3,
@@ -97,11 +97,11 @@
         },
         "per_day_wirk": {
           "2026-11-16": 12,
-          "2026-11-17": 16
+          "2026-11-17": 17
         },
         "per_day_kandidaten": {},
         "connect_rate": 93.90243902439023,
-        "avg_dur_min": 2.6214285714285714
+        "avg_dur_min": 2.8251984126984127
       }
     },
     "2026-KW46": {
@@ -736,9 +736,9 @@
       "per_day_calls": {},
       "per_day_wirk": {},
       "per_day_kandidaten": {
+        "2026-11-05": 6,
         "2026-11-16": 3,
         "2026-11-13": 3,
-        "2026-11-05": 6,
         "2026-11-02": 1,
         "2026-11-12": 3,
         "2026-11-11": 4,
@@ -752,9 +752,9 @@
     },
     "Paul": {
       "outbound": 517,
-      "wirk_calls": 173,
+      "wirk_calls": 174,
       "answered_outbound": 444,
-      "duration_sec": 77453,
+      "duration_sec": 78480,
       "total_calls": 529,
       "neue_kandidaten": 5,
       "neue_jobs": 13,
@@ -789,7 +789,7 @@
         "2026-11-12": 18,
         "2026-11-13": 5,
         "2026-11-16": 12,
-        "2026-11-17": 16
+        "2026-11-17": 17
       },
       "per_day_kandidaten": {
         "2026-11-09": 2,
@@ -797,7 +797,7 @@
         "2026-11-02": 2
       },
       "connect_rate": 85.88007736943906,
-      "avg_dur_min": 2.4402331442974163
+      "avg_dur_min": 2.4725897920604916
     }
   },
   "days": {
@@ -965,9 +965,9 @@
       },
       "Paul": {
         "outbound": 43,
-        "wirk_calls": 16,
+        "wirk_calls": 17,
         "answered_outbound": 42,
-        "duration_sec": 6524,
+        "duration_sec": 7551,
         "total_calls": 45,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -980,11 +980,11 @@
           "2026-11-17": 45
         },
         "per_day_wirk": {
-          "2026-11-17": 16
+          "2026-11-17": 17
         },
         "per_day_kandidaten": {},
         "connect_rate": 97.67441860465115,
-        "avg_dur_min": 2.4162962962962964
+        "avg_dur_min": 2.796666666666667
       }
     },
     "2026-11-09": {
