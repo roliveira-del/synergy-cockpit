@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-19T17:19:26",
+  "generated_at": "2026-11-19T17:31:30",
   "weeks": {
     "2026-KW47": {
       "start": "2026-11-16T00:00:00",
@@ -94,11 +94,11 @@
         "answered_outbound": 140,
         "duration_sec": 32128,
         "total_calls": 155,
-        "neue_kandidaten": 3,
+        "neue_kandidaten": 4,
         "neue_jobs": 5,
         "neue_kunden": 0,
-        "assignments": 3,
-        "sendouts": 3,
+        "assignments": 4,
+        "sendouts": 4,
         "interviews": 0,
         "deals": 0,
         "per_day_calls": {
@@ -114,7 +114,8 @@
           "2026-11-19": 12
         },
         "per_day_kandidaten": {
-          "2026-11-18": 3
+          "2026-11-18": 3,
+          "2026-11-19": 1
         },
         "connect_rate": 92.71523178807946,
         "avg_dur_min": 3.4546236559139785
@@ -778,11 +779,11 @@
       "answered_outbound": 507,
       "duration_sec": 96369,
       "total_calls": 600,
-      "neue_kandidaten": 8,
+      "neue_kandidaten": 9,
       "neue_jobs": 13,
       "neue_kunden": 0,
-      "assignments": 3,
-      "sendouts": 3,
+      "assignments": 4,
+      "sendouts": 4,
       "interviews": 0,
       "deals": 0,
       "per_day_calls": {
@@ -819,6 +820,7 @@
       },
       "per_day_kandidaten": {
         "2026-11-18": 3,
+        "2026-11-19": 1,
         "2026-11-09": 2,
         "2026-11-05": 1,
         "2026-11-02": 2
@@ -1182,11 +1184,11 @@
         "answered_outbound": 33,
         "duration_sec": 7508,
         "total_calls": 36,
-        "neue_kandidaten": 0,
+        "neue_kandidaten": 1,
         "neue_jobs": 0,
         "neue_kunden": 0,
-        "assignments": 0,
-        "sendouts": 0,
+        "assignments": 1,
+        "sendouts": 1,
         "interviews": 0,
         "deals": 0,
         "per_day_calls": {
@@ -1195,7 +1197,9 @@
         "per_day_wirk": {
           "2026-11-19": 12
         },
-        "per_day_kandidaten": {},
+        "per_day_kandidaten": {
+          "2026-11-19": 1
+        },
         "connect_rate": 94.28571428571428,
         "avg_dur_min": 3.475925925925926
       }
