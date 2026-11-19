@@ -30,7 +30,6 @@ def ts_local(ts):
 USERS = {
     "Kevin": {"aircall_id": 1301014, "crm_id": 99698, "color": "#3b82f6", "emoji": "👤"},
     "Robin": {"aircall_id": 1561108, "crm_id": 100690, "color": "#10b981", "emoji": "👤"},
-    "Fabian": {"aircall_id": 2091137, "crm_id": 158499, "color": "#f59e0b", "emoji": "👤"},
     "Paul": {"aircall_id": 2091922, "crm_id": 158524, "color": "#8b5cf6", "emoji": "👤"},
 }
 

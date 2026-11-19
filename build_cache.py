@@ -37,7 +37,6 @@ CRM_TOKEN = ENV['RECRUITCRM_API_TOKEN']
 USERS = {
     "Kevin": {"aircall_id": 1301014, "crm_id": 99698},
     "Robin": {"aircall_id": 1561108, "crm_id": 100690},
-    "Fabian": {"aircall_id": 2091137, "crm_id": 158499},
     "Paul": {"aircall_id": 2091922, "crm_id": 158524},
 }
 ASSIGNMENT_STATUS = {1, 613655, 613656, 613657, 613658, 613659, 613660, 613661, 613662, 8}
