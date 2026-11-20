@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-20T14:03:39",
+  "generated_at": "2026-11-20T14:15:52",
   "weeks": {
     "2026-KW47": {
       "start": "2026-11-16T00:00:00",
@@ -71,9 +71,9 @@
       },
       "Paul": {
         "outbound": 173,
-        "wirk_calls": 67,
+        "wirk_calls": 68,
         "answered_outbound": 160,
-        "duration_sec": 35145,
+        "duration_sec": 36477,
         "total_calls": 177,
         "neue_kandidaten": 4,
         "neue_jobs": 5,
@@ -94,14 +94,14 @@
           "2026-11-17": 17,
           "2026-11-18": 18,
           "2026-11-19": 12,
-          "2026-11-20": 8
+          "2026-11-20": 9
         },
         "per_day_kandidaten": {
           "2026-11-18": 3,
           "2026-11-19": 1
         },
         "connect_rate": 92.48554913294798,
-        "avg_dur_min": 3.309322033898305
+        "avg_dur_min": 3.4347457627118643
       }
     },
     "2026-KW46": {
@@ -641,9 +641,9 @@
     },
     "Paul": {
       "outbound": 608,
-      "wirk_calls": 212,
+      "wirk_calls": 213,
       "answered_outbound": 527,
-      "duration_sec": 99386,
+      "duration_sec": 100718,
       "total_calls": 622,
       "neue_kandidaten": 9,
       "neue_jobs": 13,
@@ -684,7 +684,7 @@
         "2026-11-17": 17,
         "2026-11-18": 18,
         "2026-11-19": 12,
-        "2026-11-20": 8
+        "2026-11-20": 9
       },
       "per_day_kandidaten": {
         "2026-11-18": 3,
@@ -694,7 +694,7 @@
         "2026-11-02": 2
       },
       "connect_rate": 86.67763157894737,
-      "avg_dur_min": 2.6630760986066453
+      "avg_dur_min": 2.69876741693462
     }
   },
   "days": {
@@ -1039,9 +1039,9 @@
       },
       "Paul": {
         "outbound": 22,
-        "wirk_calls": 8,
+        "wirk_calls": 9,
         "answered_outbound": 20,
-        "duration_sec": 3017,
+        "duration_sec": 4349,
         "total_calls": 22,
         "neue_kandidaten": 0,
         "neue_jobs": 0,
@@ -1054,11 +1054,11 @@
           "2026-11-20": 22
         },
         "per_day_wirk": {
-          "2026-11-20": 8
+          "2026-11-20": 9
         },
         "per_day_kandidaten": {},
         "connect_rate": 90.9090909090909,
-        "avg_dur_min": 2.2856060606060606
+        "avg_dur_min": 3.29469696969697
       }
     },
     "2026-11-09": {
